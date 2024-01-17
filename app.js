@@ -13,7 +13,11 @@ const maninRoute = require('./routes/intro');
 const userRoute = require('./routes/user');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST'],
+
+}));
 
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static('public'));
