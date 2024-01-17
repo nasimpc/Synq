@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+
+</head>
+
+<body id="a" class="">
+    <nav class="nav navbar navbar-expand-lg  bg-danger-subtle col-12">
+        <div class="container text-black p-3 ">
+
+            <h2>Chat App</h2>
+
+        </div>
+    </nav>
+    <div class=" ">
+        <div class="row">
+
+            <div class="col-md-6 text-black mt-4">
+                <h1 class="text-center">Simple
+                    <span class="text-warning">Chat App</span>
+                </h1>
+                <p class="lead my-4 text-center">
+                    talk to your friends.
+                </p>
+                <div class="card bg-info-subtle m-lg-5" style="width: 500px">
+                    <div class="card-body">
+                        <button class="btn btn-info" style="width: 200px" onclick="loginPage()">Login</button>
+                        <button class="btn btn-info float-end" style="width: 200px"
+                            onclick="signupPage()">signup</button>
+                    </div>
+                </div>
+                <div id="signupDiv" class="card bg-info-subtle m-lg-5 " style="width: 500px">
+                    <div class="card-header bg-info-subtle">
+                        <h2 class="card-title">Expense Tracker</h2>
+                    </div>
+                    <div class="card-body">
+
+                        <form onsubmit="signup(event)">
+                            <label class="form-label"> Name</label>
+                            <input id="name" type="text" name="name" class="form-control" required />
+                            <label class="form-label"> Email</label>
+                            <input id="email" type="email" name="email" class="form-control" required />
+                            <label class="form-label"> Phone Number</label>
+                            <input id="phone" type="tel" name="phone" class="form-control" required />
+                            <label class="form-label"> password</label>
+                            <input id="password" type="text" name="password" class="form-control" />
+                            <label class="form-label"></label>
+                            <button class="btn btn-info form-control"> Signup </button><br>
+
+                        </form>
+
+                    </div>
+                </div>
+                <div id="loginDiv" class="card bg-info-subtle m-lg-5 collapse" style="width: 500px">
+                    <div class="card-header">
+                        <h2 class="card-title">Expense Tracker</h2>
+                    </div>
+                    <div class="card-body">
+
+                        <form onsubmit="login(event)">
+                            <label class="form-label"> Email</label>
+                            <input id="email" type="email" name="email" class="form-control" required />
+                            <label class="form-label"> password</label>
+                            <input id="password" type="text" name="password" class="form-control" />
+
+                            <label class="form-label"></label>
+                            <button class="btn btn-info form-control"> Login </button><br>
+                        </form>
+                        <div class="text-center">
+                            <p></p>
+                            <a href="#" id="forgot-password-button" data-bs-dismiss="modal" data-bs-toggle="modal"
+                                data-bs-target="#forgotPasswordModal">Forgot password?</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6 container">
+                <img src="/images/primary.jpg" alt="" class="img-fluid d-none d-sm-block">
+                <p class="lead my-4 text-center">
+                    Making it easy to communicate from any at any time effortlessly.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="modal fade" id="forgotPasswordModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content ">
+                <div class="modal-header bg-danger-subtle text-black" id="headDiv">
+                    <h2>Reset Your Password</h2>
+                    <button class="btn btn-close" data-bs-dismiss="modal"
+                        data-bs-target="#forgotPasswordModal"></button>
+                </div>
+                <div class="modal-body bg-info-subtle text-black">
+                    <form id="forgotpassword_form" onsubmit="forgetPass(event)">
+
+                        <label class="form-label"> Email</label>
+                        <input id="forgetEmail" type="email" name="forgetEmail" class="form-control" required />
+                        <label class="form-label"></label>
+                        <button class="btn btn-info form-control"> Forgot Password </button><br>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p id="b"></p>
+    <footer class="bg-danger-subtle py-4">
+
+        <div class="container text-center">
+            Copyright © 2023 Simple.in All rights reserved. </p>
+            Contact: nasimpcm@gmail.com </p>
+        </div>
+    </footer>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+<script src="/js/intro.js"></script>
+
+</html>
