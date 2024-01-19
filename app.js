@@ -7,10 +7,12 @@ const PORT = process.env.PORT;
 const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
 const User = require('./models/users');
+const Chat = require('./models/chat');
 //const Forgotpasswords = require('./models/forgotpasswords');
 
 const maninRoute = require('./routes/intro');
 const userRoute = require('./routes/user');
+const chatRoute = require('./routes/chat');
 
 const app = express();
 app.use(cors({
@@ -22,6 +24,10 @@ app.use(cors({
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static('public'));
 
+Chat.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Chat);
+
+app.use('/chat', chatRoute);
 app.use('/user', userRoute)
 app.use(maninRoute)
 
