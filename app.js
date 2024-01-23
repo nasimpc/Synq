@@ -10,7 +10,6 @@ const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
 const User = require('./models/users');
 const Chat = require('./models/chats');
-//const Forgotpasswords = require('./models/forgotpasswords');
 
 const websocketService = require('./services/websocket');
 
@@ -32,19 +31,18 @@ const io = new Server(httpServer, {
         credentials: true
     }
 });
-io.on('connection', websocketService)
+io.on('connection', websocketService);
 
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static('public'));
 
-Chat.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-User.hasMany(Chat);
+
 
 app.use('/chat', chatRoute);
 app.use('/user', userRoute)
 app.use(maninRoute);
 
-Chat.belongsTo(User, { constraints: true });
+Chat.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Chat);
 
 async function initiate() {
