@@ -38,12 +38,15 @@ function generateAccessToken(id, name) {
 
 exports.login = async (req, res) => {
     try {
+
         const { email, password } = req.body;
 
         if (isstringnotvalid(email) || isstringnotvalid(password)) {
             return res.status(400).json({ message: "Email id or password is missing", success: false })
         }
+
         const user = await User.findAll({ where: { email } })
+
         if (user.length > 0) {
 
             bcrypt.compare(password, user[0].password, (err, result) => {
@@ -64,11 +67,9 @@ exports.login = async (req, res) => {
         }
     }
     catch (err) {
+        console.log(err);
         res.status(500).json({ message: err, success: false })
+
     }
 }
 
-exports.getcurrentuser = async (req, res, nex) => {
-    const user = req.user;
-    res.json({ user });
-}

@@ -1,3 +1,8 @@
+const socket = io(window.location.origin);
+socket.on('common-message', () => {
+    ShowCommonChats();
+})
+
 async function send(e) {
     e.preventDefault();
     const chat = event.target.chat.value;
@@ -6,35 +11,54 @@ async function send(e) {
         chat: chat,
 
     }
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
     let res = await axios.post(`/chat/add-chat`, obj, { headers: { "Authorization": token } });
-    showNewChatOnScreen(res.data.newChat);
+    socket.emit('new-common-message');
+    ShowCommonChats();
 
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-    //token for authentication
-    const token = localStorage.getItem('token')
 
-    //show expenses
-    let res = await axios.get(`/chat/get-chats`, { headers: { "Authorization": token } });
-    console.log(res);
-
-    for (var i = 0; i < res.data.allChats.length; i++) {
-        showNewChatOnScreen(res.data.allChats[i])
-
-    }
-
-})
-
-function showNewChatOnScreen(obj, ID = '1qazx234rfvrrf') {
-    if (obj['id']) {
-        ID = obj['id']
-    }
+function showChatOnScreen(chats) {
     var a = document.querySelector('#a')
-    var chatdiv = document.createElement('div');
-    chatdiv.id = ID;
-    chatdiv.appendChild(document.createTextNode(obj['name'] + ': ' + obj['chat']));
+    a.innerHTML = "";
+    chats.forEach((chat) => {
+        const date = new Date(chat.date_time);
+        const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        const formattedDate = date.toLocaleString('en-US', options);
 
-    a.appendChild(chatdiv);
+        var chatdiv = document.createElement('div');
+        chatdiv.id = chat['id'];
+        chatdiv.appendChild(document.createTextNode(chat['name'] + ': ' + chat['message'] + " " + formattedDate));
+        a.appendChild(chatdiv);
+    })
 }
+async function ShowCommonChats() {
+    try {
+        let savingChats
+        const chats = localStorage.getItem('chatHistory');
+        if (chats && chats.length != 2) {
+            const parsedChatHistory = JSON.parse(chats);
+            const lastMessageId = parsedChatHistory[parsedChatHistory.length - 1].messageId;
+            const APIresponse = await axios(`chat/get-messages?lastMessageId=${lastMessageId}`);
+            const apiChats = APIresponse.data.chats
+            const mergedChats = [...parsedChatHistory, ...apiChats];
+            savingChats = mergedChats.slice(-1000);
+        } else {
+            const APIresponse = await axios(`chat/get-messages?lastMessageId=0`);
+            const apiChats = APIresponse.data.chats
+            savingChats = apiChats.slice(-1000);
+        }
+        const token = localStorage.getItem('token');
+        const getUserResponse = await axios.get('/chat/get-user', { headers: { "Authorization": token } });
+        const userId = getUserResponse.data.userId
+        localStorage.setItem("chatHistory", JSON.stringify(savingChats));
+        showChatOnScreen(savingChats, userId)
+
+    } catch (error) {
+        console.log(error);
+        alert(error.response.data.message);
+        window.location = '/';
+    }
+}
+ShowCommonChats();
