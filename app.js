@@ -9,13 +9,15 @@ const PORT = process.env.PORT;
 const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
 const User = require('./models/users');
+const GroupMember = require('./models/group-members');
 const Chat = require('./models/chats');
+const Group = require('./models/groups');
 
-const websocketService = require('./services/websocket');
 
 const maninRoute = require('./routes/intro');
 const userRoute = require('./routes/user');
 const chatRoute = require('./routes/chat');
+const groupRoute = require('./routes/group');
 
 const app = express();
 app.use(cors({
@@ -31,7 +33,11 @@ const io = new Server(httpServer, {
         credentials: true
     }
 });
-io.on('connection', websocketService);
+io.on('connection', (socket) => {
+    socket.on('new-message', (groupId) => {
+        socket.broadcast.emit('message', groupId);
+    })
+});
 
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static('public'));
@@ -40,10 +46,19 @@ app.use(express.static('public'));
 
 app.use('/chat', chatRoute);
 app.use('/user', userRoute)
+app.use('/group', groupRoute);
 app.use(maninRoute);
 
-Chat.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+//Chat.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+Chat.belongsTo(User);
 User.hasMany(Chat);
+
+User.belongsToMany(Group, { through: GroupMember });
+Group.belongsToMany(User, { through: GroupMember });
+//Group.belongsTo(User, { foreignKey: 'AdminId', constraints: true, onDelete: 'CASCADE' })
+Group.belongsTo(User, { foreignKey: 'AdminId' })
+Group.hasMany(Chat);
+Chat.belongsTo(Group);
 
 async function initiate() {
     try {

@@ -1,5 +1,5 @@
 const express = require('express');
-const introControler = require('../controllers/intro')
+const introController = require('../controllers/intro')
 const router = express.Router();
-router.get('/', introControler.getIntropage);
+router.get('/', introController.getIntropage);
 module.exports = router;

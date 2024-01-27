@@ -5,9 +5,16 @@ const { Op } = require('sequelize');
 
 exports.addChat = async (req, res) => {
     const chat = req.body.chat;
+    let groupId = req.header('groupID');
+    groupId = Number(groupId);
+    if (groupId == 0) {
+        groupId = null;
+    }
+
     try {
         await req.user.createChat({
             message: chat,
+            GroupId: groupId
         });
         res.status(200).json({
             succes: true,
@@ -35,12 +42,15 @@ exports.getChats = async (req, res, next) => {
         res.status(500).json({ error: err });
     }
 }
-exports.getcurrentuser = async (request, response, next) => {
-    const user = request.user;
-    response.json({ userId: user.id, user });
-}
+
 exports.getAllChatHistory = async (request, response, next) => {
     try {
+
+        let groupId = request.header('groupId');
+        groupId = Number(groupId);
+        if (groupId == 0) {
+            groupId = null;
+        }
 
         const lastMessageId = request.query.lastMessageId || 0;
         const chatsRaw = await Chat.findAll({
@@ -52,7 +62,7 @@ exports.getAllChatHistory = async (request, response, next) => {
             ],
             order: [['date_time', 'ASC']],
             where: {
-                // GroupId: null,
+                GroupId: groupId,
                 id: {
                     [Op.gt]: lastMessageId
                 }

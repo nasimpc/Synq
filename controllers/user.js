@@ -1,6 +1,7 @@
 const User = require('../models/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
 
 exports.addUser = async (req, res, nex) => {
     try {
@@ -70,6 +71,28 @@ exports.login = async (req, res) => {
         console.log(err);
         res.status(500).json({ message: err, success: false })
 
+    }
+}
+exports.getcurrentuser = async (request, response, next) => {
+    const user = request.user;
+    response.json({ userId: user.id, user });
+}
+exports.getAlluser = async (request, response, next) => {
+    try {
+        const user = request.user;
+        const users = await User.findAll({
+            attributes: ['id', 'name'],
+            where: {
+                id: {
+                    [Op.not]: user.id
+                }
+            }
+        });
+        return response.status(200).json({ users, message: "All users succesfully fetched" })
+
+    } catch (error) {
+        console.log(error);
+        return response.status(500).json({ message: 'Internal Server error!' })
     }
 }
 
