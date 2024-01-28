@@ -30,6 +30,7 @@
                     <h4 id="group_name">Common Group</h4>
                     <small id="group_members">All Members</small>
 
+
                 </div>
 
 
@@ -44,10 +45,14 @@
 
         </div>
         <div class="col-9">
-            <div class="card">
+            <div class="container">
 
                 <h3 id="curr_group_name">Common Group</h3>
                 <small id="curr_group_members">All Members</small>
+                <button class="invisible" id=""> adminControl</button>
+                <div class="invisible" data-bs-toggle="modal" data-bs-target="#group_model" aria-controls="group_model"
+                    id="admin_control"> adminControl
+                </div>
 
             </div>
             <div id="chat_container" class="card overflow-y-scroll" style="height: 65vh;">
@@ -66,7 +71,7 @@
             <div class="modal-dialog modal-dialog-centered ">
                 <div class="modal-content">
                     <div class="modal-header bg-danger-subtle">
-                        <h4>Create new group</h4>
+                        <h4 id="form_heading">Create new group</h4>
                         <button class="btn btn-close" data-bs-dismiss="modal"
                             data-bs-target="#forgotPasswordModal"></button>
                     </div>
@@ -74,7 +79,8 @@
                         <form id="create_group_form">
                             <div class="mb3">
                                 <label for="members" class="col-form-label">Group Name</label>
-                                <input type="text" class="form-control" name="group_name" id="group_name" required>
+                                <input type="text" class="form-control" name="group_name" placeholder="" id="form_name"
+                                    required>
 
                             </div>
                             <div class="mb-3">
@@ -89,7 +95,7 @@
                             </div>
 
                             <label class="form-label"></label>
-                            <button id="model_submibtn" class="btn btn-info form-control"> Submit </button><br>
+                            <button id="form_submit" class="btn btn-info form-control"> Submit </button><br>
 
                         </form>
                     </div>
@@ -109,7 +115,7 @@
 
 </body>
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
 <script src="/js/main.js"></script>
 

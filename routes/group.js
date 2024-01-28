@@ -5,7 +5,9 @@ const userauthentication = require('../middleware/auth');
 
 router.post("/create-group", userauthentication.authenticate, groupController.createGroup);
 router.get('/get-groups', userauthentication.authenticate, groupController.getGroups);
-router.get('/get-group', groupController.getGroupbyId)
+router.get('/get-group', groupController.getGroupbyId);
+router.get('/get-group-members', groupController.getGroupMembersbyId);
+router.post('/update-group', userauthentication.authenticate, groupController.updateGroup);
 //router.get("/get-chats", userauthentication.authenticate, chatController.getChats);
 //router.get('/get-messages', chatController.getAllChatHistory);
 
