@@ -9,6 +9,7 @@ const PORT = process.env.PORT;
 const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
 const User = require('./models/users');
+const Forgotpasswords = require('./models/forgotpasswords');
 const GroupMember = require('./models/group-members');
 const Chat = require('./models/chats');
 const Group = require('./models/groups');
@@ -18,6 +19,7 @@ const maninRoute = require('./routes/intro');
 const userRoute = require('./routes/user');
 const chatRoute = require('./routes/chat');
 const groupRoute = require('./routes/group');
+const passwordRoutes = require('./routes/resetpass');
 
 const app = express();
 app.use(cors({
@@ -47,11 +49,15 @@ app.use(express.static('public'));
 app.use('/chat', chatRoute);
 app.use('/user', userRoute)
 app.use('/group', groupRoute);
+app.use('/password', passwordRoutes);
 app.use(maninRoute);
 
 //Chat.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 Chat.belongsTo(User);
 User.hasMany(Chat);
+
+Forgotpasswords.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Forgotpasswords);
 
 User.belongsToMany(Group, { through: GroupMember });
 Group.belongsToMany(User, { through: GroupMember });

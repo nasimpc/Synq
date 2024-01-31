@@ -4,10 +4,9 @@ exports.createGroup = async (request, response, next) => {
     try {
 
         const user = request.user;
-        const { name, membersNo, membersIds } = request.body;
+        const { name, membersIds } = request.body;
         const group = await user.createGroup({
             name,
-            membersNo,
             AdminId: user.id
         })
         membersIds.push(user.id);
@@ -73,7 +72,6 @@ exports.updateGroup = async (request, response, next) => {
         const { name, membersNo, membersIds } = request.body;
         const updatedGroup = await group.update({
             name,
-            membersNo,
             AdminId: user.id
         })
         membersIds.push(user.id);
@@ -81,7 +79,7 @@ exports.updateGroup = async (request, response, next) => {
         await updatedGroup.addUsers(membersIds.map((ele) => {
             return Number(ele)
         }));
-        return response.status(200).json({ updatedGroup, message: "Group is succesfylly updated" })
+        return response.status(200).json({ group: updatedGroup, message: "Group is succesfylly updated" })
 
     } catch (error) {
         console.log(error);

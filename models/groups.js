@@ -13,10 +13,6 @@ const Group = sequelize.define('Groups', {
         unique: true,
         notEmpty: true,
     },
-    membersNo: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-    },
     date: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW

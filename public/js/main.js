@@ -16,7 +16,7 @@ async function myfunction(groupId) {
     currgroupID = groupId
     if (groupId == 0) {
         document.getElementById('curr_group_name').innerHTML = "common";
-        document.getElementById('curr_group_members').innerHTML = "all";
+
     }
     else {
         let group = await axios.get(`../group/get-group?groupId=${groupId}`);
@@ -24,7 +24,7 @@ async function myfunction(groupId) {
             document.getElementById('admin_control').className = "btn btn-info";
         }
         document.getElementById('curr_group_name').innerHTML = group.data.group.name;
-        document.getElementById('curr_group_members').innerHTML = group.data.group.membersNo;
+
     }
     ShowChats();
 
@@ -45,6 +45,26 @@ window.addEventListener("DOMContentLoaded", async () => {
     curruserId = getUserResponse.data.userId
 });
 
+async function forgetPass(e) {
+    e.preventDefault();
+    const email = e.target.forgetEmail.value;
+
+    try {
+        const data = {
+            email: email,
+        }
+
+        const res = await axios.post('../password/forgotpassword', data);
+        console.log(res);
+
+    }
+    catch (err) {
+        console.log(err)
+
+    }
+
+}
+
 function showGroupOnScreen(group) {
     var a = document.querySelector('#group_container')
     var groupcard = document.createElement('div');
@@ -55,9 +75,7 @@ function showGroupOnScreen(group) {
     var groupHeading = document.createElement('h3');
     groupHeading.innerHTML = group['name']
     groupcard.appendChild(groupHeading)
-    var membersnodiv = document.createElement('small');
-    membersnodiv.innerHTML = group['membersNo'];
-    groupcard.appendChild(membersnodiv)
+
     a.appendChild(groupcard);
 
 }
@@ -157,7 +175,6 @@ async function createGroup(e) {
             .map(checkbox => checkbox.value);
         const data = {
             name: groupName,
-            membersNo: selectedUsers.length + 1,
             membersIds: selectedUsers
         }
         if (groupedit == 0) {
@@ -171,14 +188,13 @@ async function createGroup(e) {
             form_submit.innerHTML = "Create Group";
             form_heading.innerHTML = `Create new group`;
             groupedit = 0;
-            document.getElementById('curr_group_name').innerHTML = group.data.updatedGroup.name;
-            document.getElementById('curr_group_members').innerHTML = group.data.updatedGroup.membersNo;
+            document.getElementById('curr_group_name').innerHTML = group.data.group.name;
+            await document.getElementById(`${currgroupID}`).remove();
             alert("Group successfully updated")
         }
         create_group_form.reset();
         $('#group_model').modal('hide');
-        await document.getElementById(`${currgroupID}`).remove();
-        showGroupOnScreen(group.data.updatedGroup);
+        showGroupOnScreen(group.data.group);
 
     } catch (error) {
         console.log(error);
