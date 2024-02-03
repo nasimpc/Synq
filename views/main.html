@@ -14,7 +14,7 @@
     <nav class="nav navbar navbar-expand-lg bg-danger-subtle">
         <div class="container p-3 ">
 
-            <h2>Chat App</h2>
+            <h2>Simple Chat</h2>
 
 
 
@@ -58,14 +58,23 @@
             <div id="chat_container" class="card overflow-y-scroll" style="height: 65vh;">
 
             </div>
-            <form onsubmit="send(event)">
-
-                <input id="chat" class="form-control" type="text" name="chat" required />
-                <label class="form-label"></label>
-                <button class="btn btn-info form-control"> Submit </button><br>
-
+            <form id="chat_form" onsubmit="send(event)">
+                <div class="input-group align-items-center">
+                    <label calss="form-control">
+                        <select id="chat-category" class="form-select" name="category">
+                            <option value="text" selected="selected">text</option>
+                            <option value="image">image</option>
+                            <option value="text">location</option>
+                            <option value="text">contact</option>
+                        </select>
+                    </label>
+                    <input id="chat" class="form-control rounded-start-2" type="text" name="chat"
+                        placeholder="Type your message..." required />
+                    <button class="btn btn-info"> Submit </button><br>
+                </div>
 
             </form>
+
         </div>
         <div class="modal fade " id="group_model">
             <div class="modal-dialog modal-dialog-centered ">

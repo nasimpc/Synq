@@ -30,6 +30,17 @@ async function myfunction(groupId) {
 
 }
 
+document.getElementById('chat-category').addEventListener('change', () => {
+    if (document.getElementById('chat-category').value == "image") {
+        document.getElementById('chat').type = "file";
+        document.getElementById('chat').setAttribute('accept', 'image/*');
+    } else {
+        document.getElementById('chat').type = "text";
+        document.getElementById('chat').removeAttribute('accept');
+
+    }
+});
+
 var token = localStorage.getItem('token');
 create_groupBtn.addEventListener('click', showingAllUser);
 form_submit.addEventListener('click', createGroup);
@@ -81,18 +92,31 @@ function showGroupOnScreen(group) {
 }
 
 async function send(e) {
-    e.preventDefault();
-    const chat = event.target.chat.value;
-
-    const obj = {
-        chat: chat,
-
+    try {
+        e.preventDefault();
+        if (document.getElementById('chat-category').value == "text") {
+            const chat = event.target.chat.value;
+            const obj = { chat: chat }
+            await axios.post(`/chat/add-chat`, obj, { headers: { "Authorization": token, "groupID": currgroupID } });
+        } else {
+            const file = event.target.chat.files[0]
+            if (file && file.type.startsWith('image/')) {
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('GroupId', currgroupID)
+                await axios.post('chat/add-chatImage', formData, { headers: { "Authorization": token, "groupID": currgroupID } })
+            } else {
+                alert('Please select a valid image file.');
+            }
+        }
+        chat_form.reset();
+        socket.emit('new-message', currgroupID);
+        ShowChats();
     }
-    let res = await axios.post(`/chat/add-chat`, obj, { headers: { "Authorization": token, "groupID": currgroupID } });
-
-    socket.emit('new-message', currgroupID);
-
-    ShowChats();
+    catch (err) {
+        console.log(err);
+        alert(err.response.data.message);
+    }
 
 }
 
@@ -101,14 +125,30 @@ function showChatOnScreen(chats) {
     var a = document.querySelector('#chat_container')
     a.innerHTML = "";
     chats.forEach((chat) => {
-        const date = new Date(chat.date_time);
-        const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-        const formattedDate = date.toLocaleString('en-US', options);
+        console.log(chat);
+        if (chat.isImage) {
+            const date = new Date(chat.date_time);
+            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            const formattedDate = date.toLocaleString('en-US', options);
 
-        var chatdiv = document.createElement('div');
-        chatdiv.id = chat['id'];
-        chatdiv.appendChild(document.createTextNode(chat['name'] + ': ' + chat['message'] + " " + formattedDate));
-        a.appendChild(chatdiv);
+            var chatdiv = document.createElement('div');
+            chatdiv.id = chat['id'];
+            chatdiv.innerHTML = `<a href="${chat.message}" target="_blank">
+            <img src="${chat.message}" class="chat-image">
+          </a>`
+            chatdiv.appendChild(document.createTextNode(chat['name'] + ': ' + formattedDate));
+            a.appendChild(chatdiv);
+
+        } else {
+            const date = new Date(chat.date_time);
+            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            const formattedDate = date.toLocaleString('en-US', options);
+
+            var chatdiv = document.createElement('div');
+            chatdiv.id = chat['id'];
+            chatdiv.appendChild(document.createTextNode(chat['name'] + ': ' + chat['message'] + " " + formattedDate));
+            a.appendChild(chatdiv);
+        }
     })
 }
 
