@@ -25,7 +25,7 @@ exports.uploadToS3 = async (image, filename) => {
     return publicUrl;
 
   } catch (error) {
-    console.error('Err uploading file to S3:', error);
+    console.error('Error uploading files to S3:', error);
     throw error;
   }
 }
