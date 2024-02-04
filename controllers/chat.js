@@ -7,10 +7,7 @@ exports.addChat = async (req, res) => {
     const chat = req.body.chat;
     let groupId = req.header('groupID');
     groupId = Number(groupId);
-    if (groupId == 0) {
-        groupId = null;
-    }
-
+    if (groupId == 0) { groupId = null; }
     try {
         await req.user.createChat({ message: chat, GroupId: groupId });
         res.status(200).json({

@@ -1,9 +1,8 @@
 
 const socket = io(window.location.origin);
-
 var currgroupID = 0;
 var curruserId;
-var groupedit = 0;
+var groupcreate = 1;
 socket.on('message', (groupId) => {
     if (currgroupID == groupId) {
         ShowChats();
@@ -23,6 +22,7 @@ async function myfunction(groupId) {
         if (group.data.group.AdminId == curruserId) {
             document.getElementById('admin_control').className = "btn btn-info";
         }
+        else { document.getElementById('admin_control').className = "invisible"; }
         document.getElementById('curr_group_name').innerHTML = group.data.group.name;
 
     }
@@ -47,13 +47,15 @@ form_submit.addEventListener('click', createGroup);
 admin_control.addEventListener('click', showingGroupDetails);
 
 window.addEventListener("DOMContentLoaded", async () => {
+    const getUserResponse = await axios.get('/user/get-user', { headers: { "Authorization": token } });
+    curruserId = getUserResponse.data.userId
+
     let res = await axios.get(`../group/get-groups`, { headers: { "Authorization": token } });
     for (var i = 0; i < res.data.groups.length; i++) {
         showGroupOnScreen(res.data.groups[i]);
 
     }
-    const getUserResponse = await axios.get('/user/get-user', { headers: { "Authorization": token } });
-    curruserId = getUserResponse.data.userId
+    ShowChats();
 });
 
 async function forgetPass(e) {
@@ -77,18 +79,12 @@ async function forgetPass(e) {
 }
 
 function showGroupOnScreen(group) {
-    var a = document.querySelector('#group_container')
-    var groupcard = document.createElement('div');
-    groupcard.className = "card"
-    //groupcard.onclick = function () { myfunction(group['id']); };
-    groupcard.setAttribute("onclick", `myfunction(${group['id']})`);
-    groupcard.id = group['id'];
-    var groupHeading = document.createElement('h3');
-    groupHeading.innerHTML = group['name']
-    groupcard.appendChild(groupHeading)
-
-    a.appendChild(groupcard);
-
+    var a = document.querySelector('#group_container');
+    a.innerHTML += `<div id="${group.id}" onclick="myfunction(${group.id})" class="container d-flex align-items-center justify-content-between bg-light p-2 m-1 rounded-2">
+    <img src="https://picsum.photos/seed/${group.id}/200" alt="Profile Picture" class="rounded-circle"
+                    style="width: 50px; height: 50px;">
+                <strong class="mb-1">${group.name}</strong>
+                <p></p></div>`;
 }
 
 async function send(e) {
@@ -122,40 +118,34 @@ async function send(e) {
 
 
 function showChatOnScreen(chats) {
+    let pos = "start";
+    let currmsg;
     var a = document.querySelector('#chat_container')
     a.innerHTML = "";
     chats.forEach((chat) => {
-        console.log(chat);
-        if (chat.isImage) {
-            const date = new Date(chat.date_time);
-            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-            const formattedDate = date.toLocaleString('en-US', options);
+        console.log(chat.userId, curruserId);
+        if (chat.userId == curruserId) { pos = "end"; } else { pos = "start"; }
+        if (chat.isImage) { currmsg = `<img src="${chat.message}" style="height: 40vh;"></img>`; }
+        else { currmsg = `<p class="my-0">${chat.message}</p>` }
+        const date = new Date(chat.date_time);
+        const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        const formattedDate = date.toLocaleString('en-US', options);
 
-            var chatdiv = document.createElement('div');
-            chatdiv.id = chat['id'];
-            chatdiv.innerHTML = `<a href="${chat.message}" target="_blank">
-            <img src="${chat.message}" class="chat-image">
-          </a>`
-            chatdiv.appendChild(document.createTextNode(chat['name'] + ': ' + formattedDate));
-            a.appendChild(chatdiv);
-
-        } else {
-            const date = new Date(chat.date_time);
-            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-            const formattedDate = date.toLocaleString('en-US', options);
-
-            var chatdiv = document.createElement('div');
-            chatdiv.id = chat['id'];
-            chatdiv.appendChild(document.createTextNode(chat['name'] + ': ' + chat['message'] + " " + formattedDate));
-            a.appendChild(chatdiv);
-        }
+        var chatdiv = document.createElement('div');
+        chatdiv.id = chat['id'];
+        chatdiv.innerHTML = `<div class="card p-2 float-${pos} rounded-3 bg-info-subtle">
+            <p class="text-primary my-0"><small>${chat.name}</small></p>
+            ${currmsg}
+            <small class="text-muted text-end">${formattedDate}</small>
+        </div>`
+        a.appendChild(chatdiv);
     })
 }
 
 
 async function ShowChats() {
     try {
-        let savingChats
+        let currChats
         const chats = localStorage.getItem(`chatHistory${currgroupID}`);
         if (chats && chats.length != 2) {
             const parsedChatHistory = JSON.parse(chats);
@@ -163,14 +153,14 @@ async function ShowChats() {
             const APIresponse = await axios.get(`chat/get-messages?lastMessageId=${lastMessageId}`, { headers: { "groupId": currgroupID } });
             const apiChats = APIresponse.data.chats
             const mergedChats = [...parsedChatHistory, ...apiChats];
-            savingChats = mergedChats.slice(-100);
+            currChats = mergedChats.slice(-100);
         } else {
             const APIresponse = await axios(`chat/get-messages?lastMessageId=0`, { headers: { "groupId": currgroupID } });
             const apiChats = APIresponse.data.chats
-            savingChats = apiChats.slice(-100);
+            currChats = apiChats.slice(-100);
         }
-        localStorage.setItem(`chatHistory${currgroupID}`, JSON.stringify(savingChats));
-        showChatOnScreen(savingChats, curruserId);
+        localStorage.setItem(`chatHistory${currgroupID}`, JSON.stringify(currChats));
+        showChatOnScreen(currChats);
 
     } catch (error) {
         console.log(error);
@@ -183,11 +173,10 @@ async function showingAllUser() {
         user_list.parentElement.classList.remove('d-none');
 
         const usersResponse = await axios.get('user/get-users', { headers: { "Authorization": token } });
-        user_list.innerHTML = "";
-        let text = ""
         const { users } = usersResponse.data;
+        user_list.innerHTML = "";
         users.forEach((user) => {
-            text += `                                    
+            user_list.innerHTML += `                                    
         <li class="list-group-item  d-flex  justify-content-between">
             <div class="d-flex  align-items-center justify-content-between">
                 <img src="https://picsum.photos/seed/${user.imageUrl}/200" alt="Profile Picture"
@@ -197,9 +186,7 @@ async function showingAllUser() {
             <input type="checkbox" class="form-check-inline" name="users" value="${user.id}">
         </li>`
         })
-        user_list.innerHTML = text;
-
-
+        groupcreate = 1;
     } catch (error) {
         console.log(error);
         alert(error.response.data.message);
@@ -217,10 +204,10 @@ async function createGroup(e) {
             name: groupName,
             membersIds: selectedUsers
         }
-        if (groupedit == 0) {
+        if (groupcreate == 1) {
 
             group = await axios.post('group/create-group', data, { headers: { "Authorization": token } });
-            alert("Group successfully updated")
+            alert("Group successfully created")
 
         }
         else {
@@ -241,10 +228,11 @@ async function createGroup(e) {
         alert(error.response.data.message);
     }
 }
-ShowChats();
+
 
 async function showingGroupDetails(e) {
     try {
+        let status;
         const groupId = currgroupID
         user_list.parentElement.classList.remove('d-none');
         const usersResponse = await axios.get('user/get-users', { headers: { "Authorization": token } });
@@ -252,41 +240,25 @@ async function showingGroupDetails(e) {
         const groupMebers = memberApi.data.users;
         const idSet = new Set(groupMebers.map(item => item.id));
         user_list.innerHTML = "";
-        let text = ""
         const { users } = usersResponse.data;
         users.forEach((user) => {
-            if (idSet.has(user.id)) {
-                text += `                                    
+            if (idSet.has(user.id)) { status = "checked" } else { status = "" }
+            user_list.innerHTML += `                                    
                 <li class="list-group-item  d-flex  justify-content-between">
                     <div class="d-flex  align-items-center justify-content-between">
                         <img src="https://picsum.photos/seed/${user.imageUrl}/200" alt="Profile Picture"
                             class="rounded-circle me-3" style="width: 35px; height: 35px;">
                         <h6><strong class="mb-1">${user.name}</strong></h6>
                     </div>
-                    <input type="checkbox" class="form-check-inline" name="users" value="${user.id}" checked>
+                    <input type="checkbox" class="form-check-inline" name="users" value="${user.id}" ${status}>
                 </li>`
-            } else {
-                text += `                                    
-                <li class="list-group-item  d-flex  justify-content-between">
-                    <div class="d-flex  align-items-center justify-content-between">
-                        <img src="https://picsum.photos/seed/${user.imageUrl}/200" alt="Profile Picture"
-                            class="rounded-circle me-3" style="width: 35px; height: 35px;">
-                        <h6><strong class="mb-1">${user.name}</strong></h6>
-                    </div>
-                    <input type="checkbox" class="form-check-inline" name="users" value="${user.id}">
-                </li>`
-            }
-
         })
-        user_list.innerHTML = text;
 
         const group = await axios(`group/get-group?groupId=${groupId}`);
         document.getElementById('form_name').value = group.data.group.name;
         form_submit.innerHTML = "Update Details";
         form_heading.innerHTML = `Update ${group.data.group.name} Details`;
-        //modelElements.editStatus.value = groupId  ///imp
-        groupedit = 1;
-        //modal_closeBtn.classList.add("d-none")    //imp
+        groupcreate = 0;
     } catch (error) {
         console.log(error);
         alert(error.response.data.message);

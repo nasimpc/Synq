@@ -17,7 +17,7 @@ async function archiveOldChats() {
     const tenDaysAgo = new Date();
     tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
-    const recordsToArchive = await Chat.findAll({
+    const chatsToArchive = await Chat.findAll({
       where: {
         date_time: {
           [Op.lt]: tenDaysAgo,
@@ -27,21 +27,21 @@ async function archiveOldChats() {
 
 
     await Promise.all(
-      recordsToArchive.map(async (record) => {
+      chatsToArchive.map(async (chat) => {
         await ArchivedChat.create({
-          id: record.id,
-          message: record.message,
-          date_time: record.date_time,
-          isImage: record.isImage,
-          UserId: record.UserId,
-          GroupId: record.GroupId
+          id: chat.id,
+          message: chat.message,
+          date_time: chat.date_time,
+          isImage: chat.isImage,
+          UserId: chat.UserId,
+          GroupId: chat.GroupId
         });
-        await record.destroy();
+        await chat.destroy();
       })
     );
-    console.log('Old records archived successfully.');
+    console.log('Old chats archived successfully.');
   } catch (err) {
-    console.log('Error archiving old records:', err);
+    console.log('Error archiving old chats:', err);
   }
 }
 

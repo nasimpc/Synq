@@ -14,48 +14,61 @@
     <nav class="nav navbar navbar-expand-lg bg-danger-subtle">
         <div class="container p-3 ">
 
-            <h2>Simple Chat</h2>
+            <h2>Chat<span class="text-danger">Joy</span></h2>
+            <img src="/images/profil_pic.jpeg" alt="" data-bs-dismiss="modal" data-bs-toggle="modal"
+                data-bs-target="#profilModal" class="rounded-circle rounded-circle" style="height: 7vh;">
 
 
 
         </div>
     </nav>
 
-    <div class="row">
+    <div class="row bg-info-subtle">
         <div class="col-3">
 
-            <div id="group_container" class="card overflow-y-scroll" style="height: 78vh;">
-                <div id="0" class="card" onclick="myfunction(0)">
-
-                    <h4 id="group_name">Common Group</h4>
+            <div id="group_container" class="card overflow-y-scroll  p-2 m-1 rounded-2" style="height: 72vh;">
 
 
-
+                <div id="0" onclick="myfunction(0)"
+                    class="container d-flex align-items-center justify-content-between bg-light p-2 m-1 rounded-2">
+                    <img src="https://picsum.photos/seed/200/200" alt="Profile Picture" class="rounded-circle"
+                        style="width: 50px; height: 50px;">
+                    <strong class="mb-1">Common Group</strong>
+                    <p></p>
                 </div>
 
 
             </div>
-            <label class="form-label"></label>
-            <div class="btn btn-info form-control" data-bs-toggle="modal" data-bs-target="#group_model"
+
+            <div class="bg-info  text-center p-2 m-2 rounded-2" data-bs-toggle="modal" data-bs-target="#group_model"
                 aria-controls="group_model" id="create_groupBtn"> Create
                 new
                 group
             </div>
 
 
+
+
         </div>
         <div class="col-9">
-            <div class="container">
+            <div class="container d-flex align-items-center justify-content-between bg-light p-2 m-1 rounded-2">
 
+
+                <img src="https://picsum.photos/seed/common/200" alt="Profile Picture" class="rounded-circle"
+                    style="width: 50px; height: 50px;" id="group_img">
                 <h3 id="curr_group_name">Common Group</h3>
 
-                <button class="invisible" id=""> adminControl</button>
-                <div class="invisible" data-bs-toggle="modal" data-bs-target="#group_model" aria-controls="group_model"
-                    id="admin_control"> adminControl
+
+                <div id="admin_control" class="invisible" data-bs-toggle="modal" data-bs-target="#group_model"
+                    aria-controls="group_model"> AdminControl
                 </div>
 
+
+
+
             </div>
-            <div id="chat_container" class="card overflow-y-scroll" style="height: 65vh;">
+
+            <div id="chat_container" class="card overflow-y-scroll bg-white p-2 rounded-2 m-1" style="height: 65vh;">
 
             </div>
             <form id="chat_form" onsubmit="send(event)">
@@ -70,7 +83,7 @@
                     </label>
                     <input id="chat" class="form-control rounded-start-2" type="text" name="chat"
                         placeholder="Type your message..." required />
-                    <button class="btn btn-info"> Submit </button><br>
+                    <button class="btn btn-info rounded-end-2"> Submit </button><br>
                 </div>
 
             </form>
@@ -113,7 +126,28 @@
             </div>
 
         </div>
-        <p id="b"></p>
+        <div class="modal fade" id="profilModal">
+            <div class="modal-dialog modal-dialog-centered" style="width: 50vh;">
+                <div class="modal-content p-1">
+                    <div class="modal-body  bg-info-subtle p-1">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <img src="/images/profil_pic.jpeg" alt="" class="rounded-circle rounded-circle"
+                                    style="height: 15vh;">
+                                <ul class="list-group" id="historyplaceholder">
+                                    <a class="list-group-item text-nowrap">Name: nasim</a>
+                                    <a class="list-group-item text-nowrap">Email: nasimpcm@gmail.com</a>
+                                    <a class="list-group-item text-nowrap">Phno: 6235094897</a>
+                                    <a class="list-group-item text-nowrap">Edit Profile</a>
+                                    <a class="list-group-item text-nowrap">help</a>
+                                    <a class="list-group-item text-nowrap bg-danger" href="/">logout</a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <footer class="bg-danger-subtle py-4">
 
             <div class="container text-center">
@@ -121,6 +155,7 @@
                 Contact: nasimpcm@gmail.com </p>
             </div>
         </footer>
+
 
 </body>
 
