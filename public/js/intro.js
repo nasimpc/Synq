@@ -10,8 +10,9 @@ async function login(e) {
     try {
         const response = await axios.post(`user/login`, obj)
         if (response.status === 200) {
-            alert(response.data.message)
             localStorage.setItem('token', response.data.token);
+            login_form.reset();
+            alert(response.data.message)
             window.location.href = "user"
         }
 
@@ -58,9 +59,9 @@ async function signup(e) {
     }
     try {
         let res = await axios.post(`user/add-user`, obj);
-        alert(res.data.message)
-        console.log(res);
         localStorage.setItem('token', res.data.token);
+        signup_form.reset();
+        alert(res.data.message)
         window.location.href = "user"
     }
     catch (err) {

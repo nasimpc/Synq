@@ -10,11 +10,12 @@ socket.on('message', (groupId) => {
 })
 
 
-
 async function myfunction(groupId) {
     currgroupID = groupId
     if (groupId == 0) {
-        document.getElementById('curr_group_name').innerHTML = "common";
+        document.getElementById('curr_group_name').innerHTML = "Common Group";
+        document.getElementById('admin_control').className = "invisible";
+        document.getElementById('curr_group_img').setAttribute('src', 'https://picsum.photos/seed/200/200');
 
     }
     else {
@@ -24,6 +25,7 @@ async function myfunction(groupId) {
         }
         else { document.getElementById('admin_control').className = "invisible"; }
         document.getElementById('curr_group_name').innerHTML = group.data.group.name;
+        document.getElementById('curr_group_img').setAttribute('src', `https://picsum.photos/seed/${Number(group.data.group.id) + 40}/200`);
 
     }
     ShowChats();
@@ -42,9 +44,9 @@ document.getElementById('chat-category').addEventListener('change', () => {
 });
 
 var token = localStorage.getItem('token');
-create_groupBtn.addEventListener('click', showingAllUser);
+create_groupBtn.addEventListener('click', showingCreateGroupModel);
 form_submit.addEventListener('click', createGroup);
-admin_control.addEventListener('click', showingGroupDetails);
+admin_control.addEventListener('click', showingEditGroupModel);
 
 window.addEventListener("DOMContentLoaded", async () => {
     const getUserResponse = await axios.get('/user/get-user', { headers: { "Authorization": token } });
@@ -81,7 +83,7 @@ async function forgetPass(e) {
 function showGroupOnScreen(group) {
     var a = document.querySelector('#group_container');
     a.innerHTML += `<div id="${group.id}" onclick="myfunction(${group.id})" class="container d-flex align-items-center justify-content-between bg-light p-2 m-1 rounded-2">
-    <img src="https://picsum.photos/seed/${group.id}/200" alt="Profile Picture" class="rounded-circle"
+    <img src="https://picsum.photos/seed/${Number(group.id) + 40}/200" alt="Profile Picture" class="rounded-circle"
                     style="width: 50px; height: 50px;">
                 <strong class="mb-1">${group.name}</strong>
                 <p></p></div>`;
@@ -123,7 +125,6 @@ function showChatOnScreen(chats) {
     var a = document.querySelector('#chat_container')
     a.innerHTML = "";
     chats.forEach((chat) => {
-        console.log(chat.userId, curruserId);
         if (chat.userId == curruserId) { pos = "end"; } else { pos = "start"; }
         if (chat.isImage) { currmsg = `<img src="${chat.message}" style="height: 40vh;"></img>`; }
         else { currmsg = `<p class="my-0">${chat.message}</p>` }
@@ -162,13 +163,12 @@ async function ShowChats() {
         localStorage.setItem(`chatHistory${currgroupID}`, JSON.stringify(currChats));
         showChatOnScreen(currChats);
 
-    } catch (error) {
-        console.log(error);
-        alert(error.response.data.message);
-        window.location = '/';
+    } catch (err) {
+        console.log(err);
+        alert(err.response.data.message);
     }
 }
-async function showingAllUser() {
+async function showingCreateGroupModel() {
     try {
         user_list.parentElement.classList.remove('d-none');
 
@@ -179,7 +179,7 @@ async function showingAllUser() {
             user_list.innerHTML += `                                    
         <li class="list-group-item  d-flex  justify-content-between">
             <div class="d-flex  align-items-center justify-content-between">
-                <img src="https://picsum.photos/seed/${user.imageUrl}/200" alt="Profile Picture"
+                <img src="https://picsum.photos/seed/${Number(user.id) + 100}/200" alt="Profile Picture"
                     class="rounded-circle me-3" style="width: 35px; height: 35px;">
                 <h6><strong class="mb-1">${user.name}</strong></h6>
             </div>
@@ -187,9 +187,9 @@ async function showingAllUser() {
         </li>`
         })
         groupcreate = 1;
-    } catch (error) {
-        console.log(error);
-        alert(error.response.data.message);
+    } catch (err) {
+        console.log(err);
+        alert(err.response.data.message);
     }
 }
 async function createGroup(e) {
@@ -223,14 +223,14 @@ async function createGroup(e) {
         $('#group_model').modal('hide');
         showGroupOnScreen(group.data.group);
 
-    } catch (error) {
-        console.log(error);
-        alert(error.response.data.message);
+    } catch (err) {
+        console.log(err);
+        alert(err.response.data.message);
     }
 }
 
 
-async function showingGroupDetails(e) {
+async function showingEditGroupModel(e) {
     try {
         let status;
         const groupId = currgroupID
@@ -238,15 +238,15 @@ async function showingGroupDetails(e) {
         const usersResponse = await axios.get('user/get-users', { headers: { "Authorization": token } });
         const memberApi = await axios(`group/get-group-members?groupId=${groupId}`);
         const groupMebers = memberApi.data.users;
-        const idSet = new Set(groupMebers.map(item => item.id));
+        const membersId = new Set(groupMebers.map(item => item.id));
         user_list.innerHTML = "";
         const { users } = usersResponse.data;
         users.forEach((user) => {
-            if (idSet.has(user.id)) { status = "checked" } else { status = "" }
+            if (membersId.has(user.id)) { status = "checked" } else { status = "" }
             user_list.innerHTML += `                                    
                 <li class="list-group-item  d-flex  justify-content-between">
                     <div class="d-flex  align-items-center justify-content-between">
-                        <img src="https://picsum.photos/seed/${user.imageUrl}/200" alt="Profile Picture"
+                        <img src="https://picsum.photos/seed/${Number(user.id) + 100}/200" alt="Profile Picture"
                             class="rounded-circle me-3" style="width: 35px; height: 35px;">
                         <h6><strong class="mb-1">${user.name}</strong></h6>
                     </div>
@@ -259,6 +259,19 @@ async function showingGroupDetails(e) {
         form_submit.innerHTML = "Update Details";
         form_heading.innerHTML = `Update ${group.data.group.name} Details`;
         groupcreate = 0;
+    } catch (err) {
+        console.log(err);
+        alert(err.response.data.message);
+    }
+}
+async function showingProfileModel() {
+    try {
+        const user = await axios.get('/user/get-user', { headers: { "Authorization": token } });
+        //console.log(user.data.user);
+        profile_model_name.innerHTML = `Name: ${user.data.user.name}`;
+        profile_model_email.innerHTML = `Email: ${user.data.user.email}`;
+        profile_model_phno.innerHTML = `Phno: ${user.data.user.phonenumber}`;
+
     } catch (error) {
         console.log(error);
         alert(error.response.data.message);

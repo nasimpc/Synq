@@ -15,8 +15,9 @@
         <div class="container p-3 ">
 
             <h2>Chat<span class="text-danger">Joy</span></h2>
-            <img src="/images/profil_pic.jpeg" alt="" data-bs-dismiss="modal" data-bs-toggle="modal"
-                data-bs-target="#profilModal" class="rounded-circle rounded-circle" style="height: 7vh;">
+            <img src="/images/profil_pic.jpeg" onclick="showingProfileModel()" alt="" data-bs-dismiss="modal"
+                data-bs-toggle="modal" data-bs-target="#profilModal" class="rounded-circle rounded-circle"
+                style="height: 7vh;">
 
 
 
@@ -54,8 +55,8 @@
             <div class="container d-flex align-items-center justify-content-between bg-light p-2 m-1 rounded-2">
 
 
-                <img src="https://picsum.photos/seed/common/200" alt="Profile Picture" class="rounded-circle"
-                    style="width: 50px; height: 50px;" id="group_img">
+                <img id="curr_group_img" src="https://picsum.photos/seed/200/200" alt="Profile Picture"
+                    class="rounded-circle" style="width: 50px; height: 50px;" id="group_img">
                 <h3 id="curr_group_name">Common Group</h3>
 
 
@@ -135,12 +136,13 @@
                                 <img src="/images/profil_pic.jpeg" alt="" class="rounded-circle rounded-circle"
                                     style="height: 15vh;">
                                 <ul class="list-group" id="historyplaceholder">
-                                    <a class="list-group-item text-nowrap">Name: nasim</a>
-                                    <a class="list-group-item text-nowrap">Email: nasimpcm@gmail.com</a>
-                                    <a class="list-group-item text-nowrap">Phno: 6235094897</a>
+                                    <a id="profile_model_name" class="list-group-item text-nowrap">Name: nasim</a>
+                                    <a id="profile_model_email" class="list-group-item text-nowrap">Email:
+                                        nasimpcm@gmail.com</a>
+                                    <a id="profile_model_phno" class="list-group-item text-nowrap">Phno: 6235094897</a>
                                     <a class="list-group-item text-nowrap">Edit Profile</a>
-                                    <a class="list-group-item text-nowrap">help</a>
-                                    <a class="list-group-item text-nowrap bg-danger" href="/">logout</a>
+                                    <a class="list-group-item text-nowrap">Help</a>
+                                    <a class="list-group-item text-nowrap bg-danger" href="/">Logout</a>
                                 </ul>
                             </div>
                         </div>
