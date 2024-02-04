@@ -100,23 +100,16 @@
                     </div>
                     <div class="modal-body bg-info-subtle">
                         <form id="create_group_form">
-                            <div class="mb3">
-                                <label for="members" class="col-form-label">Group Name</label>
-                                <input type="text" class="form-control" name="group_name" placeholder="" id="form_name"
-                                    required>
-
+                            <label class="form-label">Group Name</label>
+                            <input type="text" class="form-control" name="group_name" placeholder="" id="form_name"
+                                required>
+                            <label class="form-label">Group description</label>
+                            <input type="text" class="form-control">
+                            <label class="form-label">Group members</label>
+                            <div class="card mt-1 d-none">
+                                <ul class="list-group overflow-y-scroll" id="user_list" style="max-height: 30vh;">
+                                </ul>
                             </div>
-                            <div class="mb-3">
-                                <label for="members" class="col-form-label">Group description</label>
-                                <input type="text" class="form-control">
-
-                                <div class="card mt-2 d-none">
-                                    <ul class="list-group overflow-y-scroll" id="user_list" style="max-height: 30vh;">
-                                    </ul>
-                                </div>
-
-                            </div>
-
                             <label class="form-label"></label>
                             <button id="form_submit" class="btn btn-info form-control"> Submit </button><br>
 

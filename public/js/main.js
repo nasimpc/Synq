@@ -44,9 +44,9 @@ document.getElementById('chat-category').addEventListener('change', () => {
 });
 
 var token = localStorage.getItem('token');
-create_groupBtn.addEventListener('click', showingCreateGroupModel);
+create_groupBtn.addEventListener('click', showCreateGroupModel);
 form_submit.addEventListener('click', createGroup);
-admin_control.addEventListener('click', showingEditGroupModel);
+admin_control.addEventListener('click', showEditGroupModel);
 
 window.addEventListener("DOMContentLoaded", async () => {
     const getUserResponse = await axios.get('/user/get-user', { headers: { "Authorization": token } });
@@ -168,12 +168,12 @@ async function ShowChats() {
         alert(err.response.data.message);
     }
 }
-async function showingCreateGroupModel() {
+async function showCreateGroupModel() {
     try {
         user_list.parentElement.classList.remove('d-none');
 
-        const usersResponse = await axios.get('user/get-users', { headers: { "Authorization": token } });
-        const { users } = usersResponse.data;
+        const usersRes = await axios.get('user/get-users', { headers: { "Authorization": token } });
+        const { users } = usersRes.data;
         user_list.innerHTML = "";
         users.forEach((user) => {
             user_list.innerHTML += `                                    
@@ -230,7 +230,7 @@ async function createGroup(e) {
 }
 
 
-async function showingEditGroupModel(e) {
+async function showEditGroupModel(e) {
     try {
         let status;
         const groupId = currgroupID

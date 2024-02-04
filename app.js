@@ -11,7 +11,7 @@ const sequelize = require('./util/database');
 
 const User = require('./models/users');
 const Forgotpasswords = require('./models/forgotpasswords');
-const GroupMember = require('./models/group-members');
+const GroupMember = require('./models/groupmembers');
 const Chat = require('./models/chats');
 const Group = require('./models/groups');
 
@@ -26,12 +26,7 @@ const cronService = require('./services/cronService');
 cronService.job.start();
 
 const app = express();
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST'],
-
-}));
-
+app.use(cors({ origin: '*', methods: ['GET', 'POST'], }));
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
@@ -48,14 +43,11 @@ io.on('connection', (socket) => {
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static('public'));
 
-
-
 app.use('/chat', chatRoute);
 app.use('/user', userRoute)
 app.use('/group', groupRoute);
 app.use('/password', passwordRoutes);
 app.use(maninRoute);
-
 
 Chat.belongsTo(User);
 User.hasMany(Chat);

@@ -69,7 +69,7 @@ exports.updateGroup = async (req, res, nex) => {
         const user = req.user;
         const { groupId } = req.query;
         const group = await Group.findOne({ where: { id: Number(groupId) } });
-        const { name, membersNo, membersIds } = req.body;
+        const { name, membersIds } = req.body;
         const updatedGroup = await group.update({
             name,
             AdminId: user.id
@@ -79,7 +79,7 @@ exports.updateGroup = async (req, res, nex) => {
         await updatedGroup.addUsers(membersIds.map((ele) => {
             return Number(ele)
         }));
-        return res.status(200).json({ group: updatedGroup, message: "Group is succesfylly updated" })
+        return res.status(200).json({ group: updatedGroup, message: "Group succesfylly updated" })
 
     } catch (err) {
         console.log(err);
