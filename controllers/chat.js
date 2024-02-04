@@ -19,7 +19,7 @@ exports.addChat = async (req, res) => {
         console.log(err);
         res
             .status(500)
-            .json({ success: false, message: "Unable to add chat to DataBase" });
+            .json({ success: false, message: "Unable to add chats to DataBase" });
     }
 };
 exports.getChats = async (req, res, nex) => {
