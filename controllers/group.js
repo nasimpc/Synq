@@ -1,10 +1,10 @@
 const Group = require('../models/groups');
 
-exports.createGroup = async (request, response, next) => {
+exports.createGroup = async (req, res, nex) => {
     try {
 
-        const user = request.user;
-        const { name, membersIds } = request.body;
+        const user = req.user;
+        const { name, membersIds } = req.body;
         const group = await user.createGroup({
             name,
             AdminId: user.id
@@ -13,17 +13,17 @@ exports.createGroup = async (request, response, next) => {
         await group.addUsers(membersIds.map((ele) => {
             return Number(ele)
         }));
-        return response.status(200).json({ group, message: "Group is succesfylly created" })
+        return res.status(200).json({ group, message: "Group is succesfylly created" })
 
     }
     catch (err) {
         console.log(err)
-        response.status(500).json({
-            error: err
+        res.status(500).json({
+            err: err
         })
     }
 }
-exports.getGroups = async (req, res, next) => {
+exports.getGroups = async (req, res, nex) => {
     try {
 
         const user = req.user;
@@ -32,23 +32,23 @@ exports.getGroups = async (req, res, next) => {
     }
     catch (err) {
         console.log('get-groups is failing', JSON.stringify(err));
-        res.status(500).json({ error: err });
+        res.status(500).json({ err: err });
     }
 }
-exports.getGroupbyId = async (request, response, next) => {
+exports.getGroupbyId = async (req, res, nex) => {
     try {
-        const { groupId } = request.query;
+        const { groupId } = req.query;
         const group = await Group.findOne({ where: { id: Number(groupId) } });
-        response.status(200).json({ group, message: "Group details succesfully fetched" })
-    } catch (error) {
-        console.log(error);
-        return response.status(500).json({ message: 'Internal Server error!' })
+        res.status(200).json({ group, message: "Group details succesfully fetched" })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Internal Server err!' })
     }
 }
 
-exports.getGroupMembersbyId = async (request, response, next) => {
+exports.getGroupMembersbyId = async (req, res, nex) => {
     try {
-        const { groupId } = request.query;
+        const { groupId } = req.query;
         const group = await Group.findOne({ where: { id: Number(groupId) } });
         const AllusersData = await group.getUsers();
         const users = AllusersData.map((ele) => {
@@ -58,18 +58,18 @@ exports.getGroupMembersbyId = async (request, response, next) => {
             }
         })
 
-        response.status(200).json({ users, message: "Group members name succesfully fetched" })
-    } catch (error) {
-        console.log(error);
-        return response.status(500).json({ message: 'Internal Server error!' })
+        res.status(200).json({ users, message: "Group members name succesfully fetched" })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Internal Server err!' })
     }
 }
-exports.updateGroup = async (request, response, next) => {
+exports.updateGroup = async (req, res, nex) => {
     try {
-        const user = request.user;
-        const { groupId } = request.query;
+        const user = req.user;
+        const { groupId } = req.query;
         const group = await Group.findOne({ where: { id: Number(groupId) } });
-        const { name, membersNo, membersIds } = request.body;
+        const { name, membersNo, membersIds } = req.body;
         const updatedGroup = await group.update({
             name,
             AdminId: user.id
@@ -79,10 +79,10 @@ exports.updateGroup = async (request, response, next) => {
         await updatedGroup.addUsers(membersIds.map((ele) => {
             return Number(ele)
         }));
-        return response.status(200).json({ group: updatedGroup, message: "Group is succesfylly updated" })
+        return res.status(200).json({ group: updatedGroup, message: "Group is succesfylly updated" })
 
-    } catch (error) {
-        console.log(error);
-        return response.status(500).json({ message: 'Internal Server error!' })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Internal Server err!' })
     }
 }

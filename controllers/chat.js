@@ -1,7 +1,7 @@
 const Chat = require("../models/chats");
 const User = require('../models/users');
 const { Op } = require('sequelize');
-const awsService = require('../services/awsservices');
+const awsService = require('../services/AWSServices');
 
 exports.addChat = async (req, res) => {
     const chat = req.body.chat;
@@ -25,7 +25,7 @@ exports.addChat = async (req, res) => {
             .json({ success: false, message: "Unable to add chat to DataBase" });
     }
 };
-exports.getChats = async (req, res, next) => {
+exports.getChats = async (req, res, nex) => {
     try {
 
         const chats = await Chat.findAll({});
@@ -36,17 +36,17 @@ exports.getChats = async (req, res, next) => {
     }
     catch (err) {
         console.log('get-chats is failing', JSON.stringify(err));
-        res.status(500).json({ error: err });
+        res.status(500).json({ err: err });
     }
 }
 
-exports.getAllChatHistory = async (request, response, next) => {
+exports.getAllChatHistory = async (req, res, nex) => {
     try {
 
-        let groupId = request.header('groupId');
+        let groupId = req.header('groupId');
         groupId = Number(groupId);
         if (groupId == 0) { groupId = null; }
-        const lastMessageId = request.query.lastMessageId || 0;
+        const lastMessageId = req.query.lastMessageId || 0;
         const chatsRaw = await Chat.findAll({
             include: [
                 {
@@ -73,28 +73,28 @@ exports.getAllChatHistory = async (request, response, next) => {
                 date_time: ele.date_time
             }
         })
-        return response.status(200).json({ chats, message: "User chat History Fetched" })
+        return res.status(200).json({ chats, message: "User chat History Fetched" })
 
-    } catch (error) {
-        console.log(error);
-        return response.status(500).json({ message: 'Internal Server error!' })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Internal Server err!' })
     }
 }
-exports.addChatImage = async (request, response, next) => {
+exports.addChatImage = async (req, res, nex) => {
     try {
-        const user = request.user;
-        const image = request.file;
-        let groupId = request.header('groupID');
+        const user = req.user;
+        const image = req.file;
+        let groupId = req.header('groupID');
         groupId = Number(groupId);
         if (groupId == 0) { groupId = null; }
         const filename = `chat-images/group${groupId}/user${user.id}/${Date.now()}_${image.originalname}`;
         const imageUrl = await awsService.uploadToS3(image.buffer, filename)
         await user.createChat({ message: imageUrl, groupId, isImage: true })
-        return response.status(200).json({ message: "image saved to database succesfully" })
+        return res.status(200).json({ message: "image saved to database succesfully" })
 
-    } catch (error) {
-        console.log(error);
-        return response.status(500).json({ message: 'Internal Server error!' })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Internal Server err!' })
     }
 }
 

@@ -21,7 +21,7 @@ exports.addUser = async (req, res, nex) => {
     }
     catch (err) {
         res.status(500).json({
-            error: err
+            err: err
         })
     }
 }
@@ -73,13 +73,13 @@ exports.login = async (req, res) => {
 
     }
 }
-exports.getcurrentuser = async (request, response, next) => {
-    const user = request.user;
-    response.json({ userId: user.id, user });
+exports.getcurrentuser = async (req, res, nex) => {
+    const user = req.user;
+    res.json({ userId: user.id, user });
 }
-exports.getAlluser = async (request, response, next) => {
+exports.getAlluser = async (req, res, nex) => {
     try {
-        const user = request.user;
+        const user = req.user;
         const users = await User.findAll({
             attributes: ['id', 'name'],
             where: {
@@ -88,11 +88,11 @@ exports.getAlluser = async (request, response, next) => {
                 }
             }
         });
-        return response.status(200).json({ users, message: "All users succesfully fetched" })
+        return res.status(200).json({ users, message: "All users succesfully fetched" })
 
-    } catch (error) {
-        console.log(error);
-        return response.status(500).json({ message: 'Internal Server error!' })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Internal Server err!' })
     }
 }
 
