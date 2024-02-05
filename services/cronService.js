@@ -1,25 +1,19 @@
 const Chat = require('../models/chats');
 const ArchivedChat = require('../models/archeivedchat');
-const { CronJob } = require('cron');
+const cron = require('node-cron');
 const { Op } = require('sequelize');
 
-exports.job = new CronJob(
-  '0 0 * * *',
-  function () {
-    archiveOldChats();
-  },
-  null,
-  false,
-  'Asia/Kolkata'
-);
+exports.cronSchedule = cron.schedule('0 0 * * *', () => {
+  archiveOldChats();
+});
 
 async function archiveOldChats() {
   try {
-    const tenDaysAgo = new Date();
-    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    const tenthDay = new Date();
+    tenthDay.setDate(tenthDay.getDate() - 10);
 
     const chatsToArchive = await Chat.findAll({
-      where: { date_time: { [Op.lt]: tenDaysAgo, }, },
+      where: { date_time: { [Op.lt]: tenthDay, }, },
     });
 
     await Promise.all(

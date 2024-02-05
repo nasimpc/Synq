@@ -2,6 +2,7 @@ const User = require('../models/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
+const secretkey = process.env.JWT_SECRET_KEY;
 
 exports.addUser = async (req, res, nex) => {
     try {
@@ -34,7 +35,7 @@ function isstringnotvalid(string) {
     }
 }
 function generateAccessToken(id, name) {
-    return jwt.sign({ userId: id, name: name }, 'secretkey')
+    return jwt.sign({ userId: id, name: name }, secretkey);
 }
 
 exports.login = async (req, res) => {

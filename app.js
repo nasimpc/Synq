@@ -23,22 +23,18 @@ const groupRoute = require('./routes/group');
 const passwordRoutes = require('./routes/resetpass');
 
 const cronService = require('./services/cronService');
-cronService.job.start();
+cronService.cronSchedule;
 
-const app = express();
-app.use(cors({ origin: '*', methods: ['GET', 'POST'], }));
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
-    cors: {
-        origin: ["https://admin.socket.io",],
-        credentials: true
-    }
-});
+const io = new Server(httpServer);
 io.on('connection', (socket) => {
     socket.on('new-message', (groupId) => {
         socket.broadcast.emit('message', groupId);
     })
 });
+
+const app = express();
+app.use(cors({ origin: '*', methods: ['GET', 'POST'], }));
 
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static('public'));
@@ -59,6 +55,7 @@ User.belongsToMany(Group, { through: GroupMember });
 Group.belongsToMany(User, { through: GroupMember });
 
 Group.belongsTo(User, { foreignKey: 'AdminId' })
+
 Group.hasMany(Chat);
 Chat.belongsTo(Group);
 
