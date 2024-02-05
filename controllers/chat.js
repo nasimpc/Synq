@@ -1,7 +1,7 @@
 const Chat = require("../models/chats");
 const User = require('../models/users');
 const { Op } = require('sequelize');
-const awsService = require('../services/AWSServices');
+const awsService = require('../services/awss3service');
 
 exports.addChat = async (req, res) => {
     const chat = req.body.chat;
