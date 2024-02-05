@@ -25,6 +25,9 @@ const passwordRoutes = require('./routes/resetpass');
 const cronService = require('./services/cronService');
 cronService.cronSchedule;
 
+const app = express();
+app.use(cors({ origin: '*', methods: ['GET', 'POST'], }));
+
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 io.on('connection', (socket) => {
@@ -32,9 +35,6 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('message', groupId);
     })
 });
-
-const app = express();
-app.use(cors({ origin: '*', methods: ['GET', 'POST'], }));
 
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static('public'));
