@@ -86,7 +86,7 @@ exports.addChatImage = async (req, res, nex) => {
         if (groupId == 0) { groupId = null; }
         const filename = `chat-images/group${groupId}/user${user.id}/${Date.now()}_${image.originalname}`;
         const imageUrl = await awsService.uploadToS3(image.buffer, filename)
-        await user.createChat({ message: imageUrl, groupId, isImage: true })
+        await user.createChat({ message: imageUrl, GroupId: groupId, isImage: true })
         return res.status(200).json({ message: "image saved to database succesfully" })
 
     } catch (err) {
