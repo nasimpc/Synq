@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../util/database');
 
-const ForgotPasswords = sequelize.define('Forgotpasswords', {
+const ForgotPasswords = sequelize.define('ForgotPasswords', {
   id: {
     type: Sequelize.UUID,
     primaryKey: true,

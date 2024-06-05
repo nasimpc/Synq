@@ -6,12 +6,11 @@ const { Server } = require("socket.io");
 
 const PORT = process.env.PORT;
 
-const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
 
 const User = require('./models/users');
-const Forgotpasswords = require('./models/forgotpasswords');
-const GroupMember = require('./models/groupmembers');
+const ForgotPasswords = require('./models/forgotPasswords');
+const GroupMember = require('./models/groupMembers');
 const Chat = require('./models/chats');
 const Group = require('./models/groups');
 
@@ -20,7 +19,7 @@ const maninRoute = require('./routes/intro');
 const userRoute = require('./routes/user');
 const chatRoute = require('./routes/chat');
 const groupRoute = require('./routes/group');
-const passwordRoutes = require('./routes/resetpass');
+const passwordRoutes = require('./routes/password');
 
 const cronService = require('./services/cronService');
 cronService.cronSchedule;
@@ -36,7 +35,7 @@ io.on('connection', (socket) => {
     })
 });
 
-app.use(bodyParser.json({ extended: false }));
+app.use(express.json());
 app.use(express.static('public'));
 
 app.use('/chat', chatRoute);
@@ -48,8 +47,8 @@ app.use(maninRoute);
 Chat.belongsTo(User);
 User.hasMany(Chat);
 
-Forgotpasswords.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-User.hasMany(Forgotpasswords);
+ForgotPasswords.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(ForgotPasswords);
 
 User.belongsToMany(Group, { through: GroupMember });
 Group.belongsToMany(User, { through: GroupMember });

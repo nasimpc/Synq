@@ -1,5 +1,5 @@
 const Chat = require('../models/chats');
-const ArchivedChat = require('../models/archeivedchat');
+const ArchivedChat = require('../models/archeivedChat');
 const cron = require('node-cron');
 const { Op } = require('sequelize');
 

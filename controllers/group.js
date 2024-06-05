@@ -70,10 +70,7 @@ exports.updateGroup = async (req, res, nex) => {
         const { groupId } = req.query;
         const group = await Group.findOne({ where: { id: Number(groupId) } });
         const { name, membersIds } = req.body;
-        const updatedGroup = await group.update({
-            name,
-            AdminId: user.id
-        })
+        const updatedGroup = await group.update({ name })
         membersIds.push(user.id);
         await updatedGroup.setUsers(null);
         await updatedGroup.addUsers(membersIds.map((ele) => {
