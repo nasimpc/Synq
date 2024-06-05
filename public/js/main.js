@@ -267,7 +267,6 @@ async function showEditGroupModel(e) {
 async function showingProfileModel() {
     try {
         const user = await axios.get('/user/get-user', { headers: { "Authorization": token } });
-        //console.log(user.data.user);
         profile_model_name.innerHTML = `Name: ${user.data.user.name}`;
         profile_model_email.innerHTML = `Email: ${user.data.user.email}`;
         profile_model_phno.innerHTML = `Phno: ${user.data.user.phonenumber}`;

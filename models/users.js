@@ -12,11 +12,15 @@ const User = sequelize.define('User', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    email: {
-        type: Sequelize.STRING,
+    deviceId: {
+        type: Sequelize.INTEGER,
         allowNull: false
     },
-    phonenumber: {
+    availableCoins: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    },
+    phoneNumber: {
         type: Sequelize.BIGINT(10),
         unique: true,
         allowNull: false

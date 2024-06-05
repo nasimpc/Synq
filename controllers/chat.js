@@ -17,18 +17,15 @@ exports.addChat = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
-        res
-            .status(500)
+        res.status(500)
             .json({ success: false, message: "Unable to add chats to DataBase" });
     }
 };
-exports.getChats = async (req, res, nex) => {
+exports.getChats = async (req, res) => {
     try {
-
         const chats = await Chat.findAll({});
         res.status(200).json({
             allChats: chats,
-
         });
     }
     catch (err) {
@@ -37,7 +34,7 @@ exports.getChats = async (req, res, nex) => {
     }
 }
 
-exports.getAllChatHistory = async (req, res, nex) => {
+exports.getAllChatHistory = async (req, res) => {
     try {
 
         let groupId = req.header('groupId');
@@ -77,7 +74,7 @@ exports.getAllChatHistory = async (req, res, nex) => {
         return res.status(500).json({ message: 'Internal Server err!' })
     }
 }
-exports.addChatImage = async (req, res, nex) => {
+exports.addChatImage = async (req, res) => {
     try {
         const user = req.user;
         const image = req.file;

@@ -46,8 +46,10 @@
                         <form id="signup_form" onsubmit="signup(event)">
                             <label class="form-label"> Name</label>
                             <input id="name" type="text" name="name" class="form-control" required />
-                            <label class="form-label"> Email</label>
-                            <input id="email" type="email" name="email" class="form-control" required />
+                            <label class="form-label"> DeviceId</label>
+                            <input id="deviceId" type="number" name="email" class="form-control" required />
+                            <label class="form-label"> Available Coins</label>
+                            <input id="availableCoins" type="number" name="email" class="form-control" required />
                             <label class="form-label"> Phone Number</label>
                             <input id="phone" type="tel" name="phone" class="form-control" required />
                             <label class="form-label"> password</label>
@@ -66,19 +68,15 @@
                     <div class="card-body">
 
                         <form id="login_form" onsubmit="login(event)">
-                            <label class="form-label"> Email</label>
-                            <input id="email" type="email" name="email" class="form-control" required />
+                            <label class="form-label"> name</label>
+                            <input id="name" type="text" name="email" class="form-control" required />
                             <label class="form-label"> password</label>
                             <input id="password" type="password" name="password" class="form-control" />
 
                             <label class="form-label"></label>
                             <button class="btn btn-info form-control"> Login </button><br>
                         </form>
-                        <div class="text-center">
-                            <p></p>
-                            <a href="#" id="forgot-password-button" data-bs-dismiss="modal" data-bs-toggle="modal"
-                                data-bs-target="#forgotPasswordModal">Forgot password?</a>
-                        </div>
+
                     </div>
                 </div>
 
@@ -95,28 +93,6 @@
 
     </div>
 
-
-
-    <div class="modal fade" id="forgotPasswordModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content ">
-                <div class="modal-header bg-danger-subtle text-black" id="headDiv">
-                    <h2>Reset Your Password</h2>
-                    <button class="btn btn-close" data-bs-dismiss="modal"
-                        data-bs-target="#forgotPasswordModal"></button>
-                </div>
-                <div class="modal-body bg-info-subtle text-black">
-                    <form id="forgotpassword_form" onsubmit="forgetPass(event)">
-
-                        <label class="form-label"> Email</label>
-                        <input id="forgetEmail" type="email" name="forgetEmail" class="form-control" required />
-                        <label class="form-label"></label>
-                        <button class="btn btn-info form-control"> Forgot Password </button><br>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <footer class="bg-danger-subtle py-4">
 

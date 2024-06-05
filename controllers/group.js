@@ -1,6 +1,6 @@
 const Group = require('../models/groups');
 
-exports.createGroup = async (req, res, nex) => {
+exports.createGroup = async (req, res) => {
     try {
 
         const user = req.user;
@@ -23,7 +23,7 @@ exports.createGroup = async (req, res, nex) => {
         })
     }
 }
-exports.getGroups = async (req, res, nex) => {
+exports.getGroups = async (req, res) => {
     try {
 
         const user = req.user;
@@ -35,7 +35,7 @@ exports.getGroups = async (req, res, nex) => {
         res.status(500).json({ err: err });
     }
 }
-exports.getGroupbyId = async (req, res, nex) => {
+exports.getGroupbyId = async (req, res) => {
     try {
         const { groupId } = req.query;
         const group = await Group.findOne({ where: { id: Number(groupId) } });
@@ -46,7 +46,7 @@ exports.getGroupbyId = async (req, res, nex) => {
     }
 }
 
-exports.getGroupMembersbyId = async (req, res, nex) => {
+exports.getGroupMembersbyId = async (req, res) => {
     try {
         const { groupId } = req.query;
         const group = await Group.findOne({ where: { id: Number(groupId) } });
@@ -64,7 +64,7 @@ exports.getGroupMembersbyId = async (req, res, nex) => {
         return res.status(500).json({ message: 'Internal Server err!' })
     }
 }
-exports.updateGroup = async (req, res, nex) => {
+exports.updateGroup = async (req, res) => {
     try {
         const user = req.user;
         const { groupId } = req.query;

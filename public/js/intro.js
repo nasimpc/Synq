@@ -1,12 +1,8 @@
 async function login(e) {
     e.preventDefault();
-    const email = e.target.email.value;
+    const name = e.target.name.value;
     const password = e.target.password.value;
-
-    const obj = {
-        email: email,
-        password: password,
-    }
+    const obj = { name, password }
     try {
         const response = await axios.post(`user/login`, obj)
         if (response.status === 200) {
@@ -15,7 +11,6 @@ async function login(e) {
             alert(response.data.message)
             window.location.href = "user"
         }
-
     }
     catch (err) {
         console.log(err)
@@ -24,38 +19,20 @@ async function login(e) {
     }
 }
 
-
-async function forgetPass(e) {
-    e.preventDefault();
-    const email = e.target.forgetEmail.value;
-
-    try {
-        const data = {
-            email: email,
-        }
-
-        const res = await axios.post('../password/forgotpassword', data);
-        console.log(res);
-
-    }
-    catch (err) {
-        console.log(err)
-
-    }
-
-}
 async function signup(e) {
     e.preventDefault();
     const name = e.target.name.value;
-    const email = e.target.email.value;
-    const phonenumber = e.target.phone.value;
+    const deviceId = e.target.deviceId.value;
+    const availableCoins = e.target.availableCoins.value;
+    const phoneNumber = e.target.phone.value;
     const password = e.target.password.value;
 
     const obj = {
-        name: name,
-        email: email,
-        phonenumber: phonenumber,
-        password: password,
+        name,
+        deviceId,
+        availableCoins,
+        phoneNumber,
+        password
     }
     try {
         let res = await axios.post(`user/add-user`, obj);
@@ -65,7 +42,6 @@ async function signup(e) {
         window.location.href = "user"
     }
     catch (err) {
-        //console.log("hi1", err);
         confirm('User already exists!');
 
     }

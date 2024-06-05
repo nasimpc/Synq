@@ -12,15 +12,15 @@ function generateAccessToken(id, name) {
     return jwt.sign({ userId: id, name: name }, secretkey);
 }
 
-exports.addUser = async (req, res, nex) => {
+exports.addUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-        if (isStringNotValid(name) || isStringNotValid(email) || isStringNotValid(password)) {
+        const { name, deviceId, availableCoins, phoneNumber, password } = req.body;
+        if (isStringNotValid(name) || isStringNotValid(deviceId) || isStringNotValid(availableCoins) || isStringNotValid(password)) {
             return res.status(400).json({ err: "Something is missing" })
         }
         const saltrounds = 5;
         const hashedPassword = await bcrypt.hash(password, saltrounds);
-        const user = await User.create({ name, email, password: hashedPassword });
+        const user = await User.create({ name, deviceId, availableCoins, phoneNumber, password: hashedPassword });
         res.status(201).json({ message: 'Successfuly create new user', token: generateAccessToken(user.dataValues.id, user.dataValues.name) });
 
     }
@@ -31,11 +31,11 @@ exports.addUser = async (req, res, nex) => {
 }
 exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        if (isStringNotValid(email) || isStringNotValid(password)) {
+        const { name, password } = req.body;
+        if (isStringNotValid(name) || isStringNotValid(password)) {
             return res.status(400).json({ message: "Email id or password is missing", success: false })
         }
-        const user = await User.findAll({ where: { email } })
+        const user = await User.findAll({ where: { name } })
         if (user.length > 0) {
             bcrypt.compare(password, user[0].password, (err, result) => {
                 if (err) {
@@ -60,12 +60,11 @@ exports.login = async (req, res) => {
     }
 }
 
-
-exports.getcurrentuser = async (req, res, nex) => {
+exports.getcurrentuser = async (req, res) => {
     const user = req.user;
     res.json({ userId: user.id, user });
 }
-exports.getAlluser = async (req, res, nex) => {
+exports.getAlluser = async (req, res) => {
     try {
         const user = req.user;
         const users = await User.findAll({
