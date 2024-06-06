@@ -36,15 +36,18 @@ DATABASE_HOST='localhost'
   `POST chat/chat-Image`- for sending images as chat
   `GET chat/get-chats`- getting chats of all groups
   `GET chat/get-messages`- getting chats of a specific group (for optimization of the chat application)
+  
   **group route**:\
   
   `POST group/create-group`- creating a new group by  a prime user
   `GET group/groups` - get all groups that the current user have access to
   `GET group/group` - get group with given groupId
   `GET get-group-members` - to get other group user details
+  
   **purchase route**:\
   
   `POST puchase/buy-premium`- changing from nrmal user to premium user
+  
   **user route**:\
   
   `POST user/add-user`- signup
