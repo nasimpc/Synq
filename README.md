@@ -1,4 +1,4 @@
-#Secure Group Chat Application
+# Secure Group Chat Application
 
 ## How to use
 
