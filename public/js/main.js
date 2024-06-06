@@ -1,17 +1,16 @@
 
 const socket = io(window.location.origin);
-var currgroupID = 0;
-var curruserId;
-var groupcreate = 1;
+var currentGroupId = 0;
+var currentUserId;
+var groupCreate = 1;
 socket.on('message', (groupId) => {
-    if (currgroupID == groupId) {
-        ShowChats();
+    if (currentGroupId == groupId) {
+        showChats();
     }
 })
 
-
-async function myfunction(groupId) {
-    currgroupID = groupId
+async function myFunction(groupId) {
+    currentGroupId = groupId
     if (groupId == 0) {
         document.getElementById('curr_group_name').innerHTML = "Common Group";
         document.getElementById('admin_control').className = "invisible";
@@ -20,7 +19,7 @@ async function myfunction(groupId) {
     }
     else {
         let group = await axios.get(`../group/get-group?groupId=${groupId}`);
-        if (group.data.group.AdminId == curruserId) {
+        if (group.data.group.AdminId == currentUserId) {
             document.getElementById('admin_control').className = "btn btn-info";
         }
         else { document.getElementById('admin_control').className = "invisible"; }
@@ -28,7 +27,7 @@ async function myfunction(groupId) {
         document.getElementById('curr_group_img').setAttribute('src', `https://picsum.photos/seed/${Number(group.data.group.id) + 40}/200`);
 
     }
-    ShowChats();
+    showChats();
 
 }
 
@@ -44,49 +43,53 @@ document.getElementById('chat-category').addEventListener('change', () => {
 });
 
 var token = localStorage.getItem('token');
-create_groupBtn.addEventListener('click', showCreateGroupModel);
+create_group.addEventListener('click', showCreateGroupModel);
 form_submit.addEventListener('click', createGroup);
 admin_control.addEventListener('click', showEditGroupModel);
+buy_premium.addEventListener('click', buyPremiumPermission);
 
 window.addEventListener("DOMContentLoaded", async () => {
+    //checking for pro sub
     const getUserResponse = await axios.get('/user/get-user', { headers: { "Authorization": token } });
-    curruserId = getUserResponse.data.userId
+    let { userId, isPremiumUser } = getUserResponse.data;
+    currentUserId = userId;
+    if (isPremiumUser == 1) {
+        document.getElementById('logo_name').innerHTML = "ChatJoy pro";
+        document.getElementById('create_group').className = "bg-info  text-center p-2 m-2 rounded-2";
+        document.getElementById('buy_premium').className = "bg-info  text-center p-2 m-2 rounded-2 collapse";
+    }
 
     let res = await axios.get(`../group/get-groups`, { headers: { "Authorization": token } });
     for (var i = 0; i < res.data.groups.length; i++) {
         showGroupOnScreen(res.data.groups[i]);
 
     }
-    ShowChats();
+    showChats();
 });
 
-async function forgetPass(e) {
-    e.preventDefault();
-    const email = e.target.forgetEmail.value;
-
-    try {
-        const data = {
-            email: email,
-        }
-
-        const res = await axios.post('../password/forgotpassword', data);
-        console.log(res);
-
-    }
-    catch (err) {
-        console.log(err)
-
+async function buyPremiumPermission(e) {
+    if (confirm("buy premium member ship:5000rs") == true) {
+        document.getElementById('logo_name').innerHTML = "ChatJoy pro";
+        document.getElementById('create_group').className = "bg-info  text-center p-2 m-2 rounded-2";
+        document.getElementById('buy_premium').className = "bg-info  text-center p-2 m-2 rounded-2 collapse";
+        let obj = { currentUserId }
+        await axios.post(`/purchase/buy-premium`, obj, { headers: { "Authorization": token } });
     }
 
 }
 
 function showGroupOnScreen(group) {
+    // let res = await axios.get(`../group/`, { headers: { "Authorization": token } });
+    // if (res.ismember) {
     var a = document.querySelector('#group_container');
-    a.innerHTML += `<div id="${group.id}" onclick="myfunction(${group.id})" class="container d-flex align-items-center justify-content-between bg-light p-2 m-1 rounded-2">
+    a.innerHTML += `<div id="${group.id}" onclick="myFunction(${group.id})" class="container d-flex align-items-center justify-content-between bg-light p-2 m-1 rounded-2">
     <img src="https://picsum.photos/seed/${Number(group.id) + 40}/200" alt="Profile Picture" class="rounded-circle"
                     style="width: 50px; height: 50px;">
                 <strong class="mb-1">${group.name}</strong>
                 <p></p></div>`;
+    // }else {
+    //         alert('please join in the group');
+    //     }
 }
 
 async function send(e) {
@@ -95,21 +98,21 @@ async function send(e) {
         if (document.getElementById('chat-category').value == "text") {
             const chat = event.target.chat.value;
             const obj = { chat: chat }
-            await axios.post(`/chat/add-chat`, obj, { headers: { "Authorization": token, "groupID": currgroupID } });
+            await axios.post(`/chat/add-chat`, obj, { headers: { "Authorization": token, "groupID": currentGroupId } });
         } else {
             const file = event.target.chat.files[0]
             if (file && file.type.startsWith('image/')) {
                 const formData = new FormData();
                 formData.append('image', file);
-                formData.append('GroupId', currgroupID)
-                await axios.post('chat/add-chatImage', formData, { headers: { "Authorization": token, "groupID": currgroupID } })
+                formData.append('GroupId', currentGroupId)
+                await axios.post('chat/add-chatImage', formData, { headers: { "Authorization": token, "groupID": currentGroupId } })
             } else {
                 alert('Please select a valid image file.');
             }
         }
         chat_form.reset();
-        socket.emit('new-message', currgroupID);
-        ShowChats();
+        socket.emit('new-message', currentGroupId);
+        showChats();
     }
     catch (err) {
         console.log(err);
@@ -121,13 +124,13 @@ async function send(e) {
 
 function showChatOnScreen(chats) {
     let pos = "start";
-    let currmsg;
-    var a = document.querySelector('#chat_container')
+    let currMsg;
+    var a = document.querySelector('#chat_container');
     a.innerHTML = "";
     chats.forEach((chat) => {
-        if (chat.userId == curruserId) { pos = "end"; } else { pos = "start"; }
-        if (chat.isImage) { currmsg = `<img src="${chat.message}" style="height: 40vh;"></img>`; }
-        else { currmsg = `<p class="my-0">${chat.message}</p>` }
+        if (chat.userId == currentUserId) { pos = "end"; } else { pos = "start"; }
+        if (chat.isImage) { currMsg = `<img src="${chat.message}" style="height: 40vh;"></img>`; }
+        else { currMsg = `<p class="my-0">${chat.message}</p>` }
         const date = new Date(chat.date_time);
         const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
         const formattedDate = date.toLocaleString('en-US', options);
@@ -136,7 +139,7 @@ function showChatOnScreen(chats) {
         chatdiv.id = chat['id'];
         chatdiv.innerHTML = `<div class="card p-2 float-${pos} rounded-3 bg-info-subtle">
             <p class="text-primary my-0"><small>${chat.name}</small></p>
-            ${currmsg}
+            ${currMsg}
             <small class="text-muted text-end">${formattedDate}</small>
         </div>`
         a.appendChild(chatdiv);
@@ -144,23 +147,23 @@ function showChatOnScreen(chats) {
 }
 
 
-async function ShowChats() {
+async function showChats() {
     try {
         let currChats
-        const chats = localStorage.getItem(`chatHistory${currgroupID}`);
+        const chats = localStorage.getItem(`chatHistory${currentGroupId}`);
         if (chats && chats.length != 2) {
             const parsedChatHistory = JSON.parse(chats);
             const lastMessageId = parsedChatHistory[parsedChatHistory.length - 1].messageId;
-            const APIresponse = await axios.get(`chat/get-messages?lastMessageId=${lastMessageId}`, { headers: { "groupId": currgroupID } });
+            const APIresponse = await axios.get(`chat/get-messages?lastMessageId=${lastMessageId}`, { headers: { "groupId": currentGroupId } });
             const apiChats = APIresponse.data.chats
             const mergedChats = [...parsedChatHistory, ...apiChats];
             currChats = mergedChats.slice(-100);
         } else {
-            const APIresponse = await axios(`chat/get-messages?lastMessageId=0`, { headers: { "groupId": currgroupID } });
+            const APIresponse = await axios(`chat/get-messages?lastMessageId=0`, { headers: { "groupId": currentGroupId } });
             const apiChats = APIresponse.data.chats
             currChats = apiChats.slice(-100);
         }
-        localStorage.setItem(`chatHistory${currgroupID}`, JSON.stringify(currChats));
+        localStorage.setItem(`chatHistory${currentGroupId}`, JSON.stringify(currChats));
         showChatOnScreen(currChats);
 
     } catch (err) {
@@ -186,7 +189,7 @@ async function showCreateGroupModel() {
             <input type="checkbox" class="form-check-inline" name="users" value="${user.id}">
         </li>`
         })
-        groupcreate = 1;
+        groupCreate = 1;
     } catch (err) {
         console.log(err);
         alert(err.response.data.message);
@@ -204,19 +207,19 @@ async function createGroup(e) {
             name: groupName,
             membersIds: selectedUsers
         }
-        if (groupcreate == 1) {
+        if (groupCreate == 1) {
 
             group = await axios.post('group/create-group', data, { headers: { "Authorization": token } });
             alert("Group successfully created")
 
         }
         else {
-            group = await axios.post(`group/update-group?groupId=${currgroupID}`, data, { headers: { "Authorization": token } });
+            group = await axios.post(`group/update-group?groupId=${currentGroupId}`, data, { headers: { "Authorization": token } });
             form_submit.innerHTML = "Create Group";
             form_heading.innerHTML = `Create new group`;
             groupedit = 0;
             document.getElementById('curr_group_name').innerHTML = group.data.group.name;
-            await document.getElementById(`${currgroupID}`).remove();
+            await document.getElementById(`${currentGroupId}`).remove();
             alert("Group successfully updated")
         }
         create_group_form.reset();
@@ -233,7 +236,7 @@ async function createGroup(e) {
 async function showEditGroupModel(e) {
     try {
         let status;
-        const groupId = currgroupID
+        const groupId = currentGroupId
         user_list.parentElement.classList.remove('d-none');
         const usersResponse = await axios.get('user/get-users', { headers: { "Authorization": token } });
         const memberApi = await axios(`group/get-group-members?groupId=${groupId}`);
@@ -258,7 +261,7 @@ async function showEditGroupModel(e) {
         document.getElementById('form_name').value = group.data.group.name;
         form_submit.innerHTML = "Update Details";
         form_heading.innerHTML = `Update ${group.data.group.name} Details`;
-        groupcreate = 0;
+        groupCreate = 0;
     } catch (err) {
         console.log(err);
         alert(err.response.data.message);

@@ -1,6 +1,6 @@
-exports.getIntropage = (req, res) => {
+exports.getIntroPage = (req, res) => {
     res.sendFile('intro.html', { root: 'views' });
 }
-exports.getMainpage = (req, res) => {
+exports.getMainPage = (req, res) => {
     res.sendFile('main.html', { root: 'views' });
 }

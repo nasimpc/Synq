@@ -8,8 +8,8 @@ const router = express.Router();
 router.post('/add-user', userController.addUser);
 router.post('/login', userController.login);
 router.get('/get-users', userAuthentication.authenticate, userController.getAlluser)
-router.get('/get-user', userAuthentication.authenticate, userController.getcurrentuser)
+router.get('/get-user', userAuthentication.authenticate, userController.getCurrentUser)
 
-router.get('/', introController.getMainpage)
+router.get('/', introController.getMainPage)
 
 module.exports = router;
