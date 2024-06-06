@@ -8,7 +8,5 @@ router.get('/get-groups', userAuthentication.authenticate, groupController.getGr
 router.get('/get-group', groupController.getGroupbyId);
 router.get('/get-group-members', groupController.getGroupMembersbyId);
 router.post('/update-group', userAuthentication.authenticate, groupController.updateGroup);
-//router.get("/get-chats", userAuthentication.authenticate, chatController.getChats);
-//router.get('/get-messages', chatController.getAllChatHistory);
 
 module.exports = router;
