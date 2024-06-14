@@ -17,6 +17,11 @@ const Group = sequelize.define('Groups', {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
     },
+    count: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    }
 },
     {
         timestamps: false

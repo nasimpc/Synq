@@ -41,13 +41,14 @@ app.use('/user', userRoute)
 app.use('/group', groupRoute);
 app.use(maninRoute);
 
-Chat.belongsTo(User);
 User.hasMany(Chat);
+Chat.belongsTo(User);
 
 User.belongsToMany(Group, { through: GroupMember });
 Group.belongsToMany(User, { through: GroupMember });
 
-Group.belongsTo(User, { foreignKey: 'AdminId' })
+User.hasMany(Group, { foreignKey: 'AdminId' });
+Group.belongsTo(User, { foreignKey: 'AdminId' });
 
 Group.hasMany(Chat);
 Chat.belongsTo(Group);

@@ -16,7 +16,8 @@ exports.addUser = async (req, res) => {
     try {
         const { name, deviceId, availableCoins, phoneNumber, password } = req.body;
         if (isStringNotValid(name) || isStringNotValid(deviceId) || isStringNotValid(availableCoins) || isStringNotValid(password)) {
-            return res.status(400).json({ err: "Something is missing" })
+            res.status(400).json({ err: "Something is missing" })
+            return
         }
         const saltrounds = 5;
         const hashedPassword = await bcrypt.hash(password, saltrounds);
@@ -33,24 +34,28 @@ exports.login = async (req, res) => {
     try {
         const { name, password } = req.body;
         if (isStringNotValid(name) || isStringNotValid(password)) {
-            return res.status(400).json({ message: "Email id or password is missing", success: false })
+            res.status(400).json({ message: "Email id or password is missing", success: false })
+            return
         }
         const user = await User.findAll({ where: { name } })
         if (user.length > 0) {
             bcrypt.compare(password, user[0].password, (err, result) => {
                 if (err) {
                     res.status(500).json({ success: false, message: "Something went wrong" })
+                    return
                 }
                 if (result == true) {
                     res.status(200).json({ success: true, message: "User logged in sucessfully", token: generateAccessToken(user[0].id, user[0].name) })
+                    return
                 }
                 else {
-                    return res.status(400).json({ success: false, message: "Password is incorrect" })
+                    res.status(400).json({ success: false, message: "Password is incorrect" })
+                    return
                 }
             })
         }
         else {
-            return res.status(404).json({ success: false, message: "User not found" })
+            res.status(404).json({ success: false, message: "User not found" })
         }
     }
     catch (err) {
@@ -75,11 +80,11 @@ exports.getAlluser = async (req, res) => {
                 }
             }
         });
-        return res.status(200).json({ users, message: "All users succesfully fetched" })
+        res.status(200).json({ users, message: "All users succesfully fetched" })
 
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ message: 'Internal Server err!' })
+        res.status(500).json({ message: 'Internal Server err!' })
     }
 }
 

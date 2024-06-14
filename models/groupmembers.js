@@ -7,7 +7,13 @@ const Groupmember = sequelize.define('GroupMembers', {
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
+    },
+    status: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
     }
+
 },
     {
         timestamps: false

@@ -34,8 +34,7 @@ DATABASE_HOST='localhost'
   
   * `POST chat/add-chat`- for sending chat
   * `POST chat/chat-Image`- for sending images as chat
-  * `GET chat/get-chats`- getting chats of all groups
-  * `GET chat/get-messages`- getting chats of a specific group (for optimization of the chat application)
+  * `GET chat/get-chats`- getting chats of a specific group
   
   **group route**:
   
@@ -46,7 +45,7 @@ DATABASE_HOST='localhost'
   
   **purchase route**:
   
-  * `POST puchase/buy-premium`- changing from nrmal user to premium user
+  * `POST purchase/buy-premium`- changing from normal user to premium user
   
   **user route**:
   

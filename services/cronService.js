@@ -3,7 +3,7 @@ const ArchivedChat = require('../models/archeivedChat');
 const cron = require('node-cron');
 const { Op } = require('sequelize');
 
-exports.cronSchedule = cron.schedule('0 0 * * *', () => {
+exports.cronSchedule = cron.schedule('0 * * * *', () => {
   archiveOldChats();
 });
 

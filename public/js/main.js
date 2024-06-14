@@ -1,4 +1,3 @@
-
 const socket = io(window.location.origin);
 var currentGroupId = 0;
 var currentUserId;
@@ -18,11 +17,14 @@ async function myFunction(groupId) {
 
     }
     else {
+
         let group = await axios.get(`../group/get-group?groupId=${groupId}`);
         if (group.data.group.AdminId == currentUserId) {
             document.getElementById('admin_control').className = "btn btn-info";
         }
-        else { document.getElementById('admin_control').className = "invisible"; }
+        else {
+            document.getElementById('admin_control').className = "invisible";
+        }
         document.getElementById('curr_group_name').innerHTML = group.data.group.name;
         document.getElementById('curr_group_img').setAttribute('src', `https://picsum.photos/seed/${Number(group.data.group.id) + 40}/200`);
 
@@ -97,9 +99,10 @@ async function send(e) {
         e.preventDefault();
         if (document.getElementById('chat-category').value == "text") {
             const chat = event.target.chat.value;
-            const obj = { chat: chat }
+            const obj = { chat }
             await axios.post(`/chat/add-chat`, obj, { headers: { "Authorization": token, "groupID": currentGroupId } });
         } else {
+
             const file = event.target.chat.files[0]
             if (file && file.type.startsWith('image/')) {
                 const formData = new FormData();
@@ -123,13 +126,16 @@ async function send(e) {
 
 
 function showChatOnScreen(chats) {
+
     let pos = "start";
     let currMsg;
     var a = document.querySelector('#chat_container');
     a.innerHTML = "";
     chats.forEach((chat) => {
         if (chat.userId == currentUserId) { pos = "end"; } else { pos = "start"; }
-        if (chat.isImage) { currMsg = `<img src="${chat.message}" style="height: 40vh;"></img>`; }
+        if (chat.isImage) {
+            currMsg = `<img src="${chat.message}" style="height: 40vh;"></img>`;
+        }
         else { currMsg = `<p class="my-0">${chat.message}</p>` }
         const date = new Date(chat.date_time);
         const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -154,12 +160,12 @@ async function showChats() {
         if (chats && chats.length != 2) {
             const parsedChatHistory = JSON.parse(chats);
             const lastMessageId = parsedChatHistory[parsedChatHistory.length - 1].messageId;
-            const APIresponse = await axios.get(`chat/get-messages?lastMessageId=${lastMessageId}`, { headers: { "groupId": currentGroupId } });
+            const APIresponse = await axios.get(`chat/get-chats?lastChatId=${lastMessageId}`, { headers: { "groupId": currentGroupId } });
             const apiChats = APIresponse.data.chats
             const mergedChats = [...parsedChatHistory, ...apiChats];
             currChats = mergedChats.slice(-100);
         } else {
-            const APIresponse = await axios(`chat/get-messages?lastMessageId=0`, { headers: { "groupId": currentGroupId } });
+            const APIresponse = await axios(`chat/get-chats?lastChatId=0`, { headers: { "groupId": currentGroupId } });
             const apiChats = APIresponse.data.chats
             currChats = apiChats.slice(-100);
         }
@@ -203,6 +209,7 @@ async function createGroup(e) {
         const groupName = create_group_form.querySelector('#form_name').value;
         const selectedUsers = Array.from(user_list.querySelectorAll('input[name="users"]:checked'))
             .map(checkbox => checkbox.value);
+        console.log(selectedUsers);
         const data = {
             name: groupName,
             membersIds: selectedUsers
@@ -223,7 +230,9 @@ async function createGroup(e) {
             alert("Group successfully updated")
         }
         create_group_form.reset();
-        $('#group_model').modal('hide');
+        var myModalEl = document.getElementById('group_model');
+        var modal = bootstrap.Modal.getInstance(myModalEl)
+        modal.hide();
         showGroupOnScreen(group.data.group);
 
     } catch (err) {

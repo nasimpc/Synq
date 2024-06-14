@@ -7,7 +7,6 @@ const upload = multerMiddleware.multer.single('image');
 
 router.post("/add-chat", userAuthentication.authenticate, chatController.addChat);
 router.post('/add-chatImage', userAuthentication.authenticate, upload, chatController.addChatImage)
-router.get("/get-chats", userAuthentication.authenticate, chatController.getChats);
-router.get('/get-messages', chatController.getAllChatHistory);
+router.get('/get-chats', chatController.getChats);
 
 module.exports = router;
