@@ -8,5 +8,7 @@ router.get('/get-groups', userAuthentication.authenticate, groupController.getGr
 router.get('/get-group', groupController.getGroupbyId);
 router.get('/get-group-members', groupController.getGroupMembersbyId);
 router.post('/update-group', userAuthentication.authenticate, groupController.updateGroup);
+router.post('/accept-request', groupController.acceptRequest);
+router.post('/reject-request', groupController.rejectRequest);
 
 module.exports = router;

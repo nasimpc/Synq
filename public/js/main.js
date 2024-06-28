@@ -6,7 +6,7 @@ socket.on('message', (groupId) => {
     if (currentGroupId == groupId) {
         showChats();
     }
-})
+});
 
 async function myFunction(groupId) {
     currentGroupId = groupId
@@ -81,17 +81,27 @@ async function buyPremiumPermission(e) {
 }
 
 function showGroupOnScreen(group) {
-    // let res = await axios.get(`../group/`, { headers: { "Authorization": token } });
-    // if (res.ismember) {
-    var a = document.querySelector('#group_container');
-    a.innerHTML += `<div id="${group.id}" onclick="myFunction(${group.id})" class="container d-flex align-items-center justify-content-between bg-light p-2 m-1 rounded-2">
+    if (group.GroupMembers.status == 0) {
+        var a = document.querySelector('#group_container');
+        a.innerHTML += `<div id="${group.id}"  onclick="myFunction(${group.id})" class="container d-flex align-items-center justify-content-between bg-light p-2 m-1 rounded-2">
     <img src="https://picsum.photos/seed/${Number(group.id) + 40}/200" alt="Profile Picture" class="rounded-circle"
                     style="width: 50px; height: 50px;">
                 <strong class="mb-1">${group.name}</strong>
-                <p></p></div>`;
-    // }else {
-    //         alert('please join in the group');
-    //     }
+                <button onclick="acceptRequest(event)" >accept</button>
+                <button onclick="rejectRequest(event)" >reject</button>
+                </div>`;
+    }
+    else {
+        var a = document.querySelector('#group_container');
+        a.innerHTML += `<div id="${group.id}" data-group_members_id="1" onclick="myFunction(${group.id})" class="container d-flex align-items-center justify-content-between bg-light p-2 m-1 rounded-2">
+    <img src="https://picsum.photos/seed/${Number(group.id) + 40}/200" alt="Profile Picture" class="rounded-circle"
+                    style="width: 50px; height: 50px;">
+                <strong class="mb-1">${group.name}</strong>
+                </div>`;
+
+    }
+
+
 }
 
 async function send(e) {
@@ -209,7 +219,6 @@ async function createGroup(e) {
         const groupName = create_group_form.querySelector('#form_name').value;
         const selectedUsers = Array.from(user_list.querySelectorAll('input[name="users"]:checked'))
             .map(checkbox => checkbox.value);
-        console.log(selectedUsers);
         const data = {
             name: groupName,
             membersIds: selectedUsers
@@ -286,5 +295,24 @@ async function showingProfileModel() {
     } catch (error) {
         console.log(error);
         alert(error.response.data.message);
+    }
+}
+async function acceptRequest(e) {
+    try {
+        let obj = { currentUserId, currentGroupId };
+        if (confirm("Join the group:150rs") == true) {
+            await axios.post(`/group/accept-request`, obj);
+        }
+    } catch (err) {
+        console.log(err);
+        alert(err.response.data.message);
+    }
+}
+async function rejectRequest(e) {
+    try {
+        let obj = { currentUserId, currentGroupId };
+        await axios.post(`/group/reject-request`, obj);
+    } catch (error) {
+        console.log(error);
     }
 }
