@@ -67,7 +67,7 @@ exports.login = async (req, res) => {
 
 exports.getCurrentUser = async (req, res) => {
     const user = req.user;
-    res.json({ userId: user.dataValues.id, isPremiumUser: user.dataValues.isPremiumUser });
+    res.json({ userId: user.dataValues.id, name: user.dataValues.name, deviceId: user.dataValues.deviceId, availableCoins: user.dataValues.availableCoins, phoneNumber: user.dataValues.phoneNumber, isPremiumUser: user.dataValues.isPremiumUser });
 }
 exports.getAlluser = async (req, res) => {
     try {

@@ -288,13 +288,15 @@ async function showEditGroupModel(e) {
 async function showingProfileModel() {
     try {
         const user = await axios.get('/user/get-user', { headers: { "Authorization": token } });
-        profile_model_name.innerHTML = `Name: ${user.data.user.name}`;
-        profile_model_email.innerHTML = `Email: ${user.data.user.email}`;
-        profile_model_phno.innerHTML = `Phno: ${user.data.user.phonenumber}`;
+        console.log(user)
+        profile_model_name.innerHTML = `Name: ${user.data.name}`;
+        profile_model_deviceId.innerHTML = `Device Id: ${user.data.deviceId}`;
+        profile_model_avilableCoins.innerHTML = `Coins: ${user.data.availableCoins}`;
+        profile_model_phno.innerHTML = `Phno: ${user.data.phoneNumber}`;
 
     } catch (error) {
         console.log(error);
-        alert(error.response.data.message);
+        //alert(error.response.data.message);
     }
 }
 async function acceptRequest(e) {
