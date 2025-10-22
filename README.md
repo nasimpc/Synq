@@ -1,4 +1,7 @@
-# Secure Group Chat Application
+# Synq
+A web-based chat application that enables users to register, log in, create groups, and communicate with friends in real time. The system supports multimedia messaging through integration with AWS S3 for secure and scalable file storage.
+To ensure optimal performance, the application automatically archives daily messages using a scheduled cron job. The entire platform is deployed on AWS.
+
 
 ## How to use
 
